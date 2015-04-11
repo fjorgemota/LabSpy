@@ -54,14 +54,6 @@ public class ClientThread implements Runnable {
         }
     }
 
-    public Screenshot getLastScreenshot() {
-        return this.lastScreenshot;
-    }
-
-    public InfoMessage getInfo() {
-        return this.info;
-    }
-
     public void sendMessage(BaseMessage msg) {
         this.send.add(msg);
     }

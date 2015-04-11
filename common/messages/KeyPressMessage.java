@@ -5,5 +5,5 @@ import java.util.ArrayList;
 /**
  * Created by fernando on 11/04/15.
  */
-public class KeyPressMessage implements BaseMessage {
+public class KeyPressMessage implements RobotMessage {
 }
