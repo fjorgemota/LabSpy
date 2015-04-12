@@ -1,6 +1,6 @@
 package threads;
 
-import javafx.stage.Screen;
+
 import messages.*;
 
 import java.awt.*;
