@@ -1,5 +1,7 @@
 package config;
 
+import org.json.simple.JSONObject;
+
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 
@@ -12,7 +14,7 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
 
         Config config = Config.getInstance();
-        HashMap<String, Object> fullConfig = config.getFullConfig();
+        JSONObject fullConfig = config.getFullConfig();
 
         System.out.println("Teste!");
         System.out.println("Size of the configuration file: " + fullConfig.size());
@@ -21,7 +23,7 @@ public class Main {
         // System.out.println("Will throw an exception");
 
         // Should create a configuration file at /var/lib/LabSpy/
-        //config.setAddress("123.323.232.23");
+        config.setAddress("123.323.232.23");
 
         // Loads configs from the file.
         System.out.println("Loading data from file: " + config.getAddress());
