@@ -32,7 +32,7 @@ public class ClientThread implements Runnable {
             ObjectInputStream is = new ObjectInputStream(this.sock.getInputStream());
             ObjectOutputStream os = new ObjectOutputStream(this.sock.getOutputStream());
             while (true) {
-                if(is.available() > 0) {
+               if(is.available() > 0) {
                     BaseMessage msg = (BaseMessage) is.readObject();
                     this.receiveMessage(msg);
                 }
