@@ -24,7 +24,7 @@ public class ServerThread implements Runnable {
             }
         } catch (IOException e) {}
     }
-    public ArrayList<ClientThread> clientsList() {
+    public ArrayList<ClientThread> getClients() {
         return clients;
     }
 }
