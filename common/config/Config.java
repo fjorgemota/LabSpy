@@ -1,4 +1,4 @@
-package others;
+package config;
 /**
  * Created by paladini on 4/11/15.
  *

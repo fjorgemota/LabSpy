@@ -14,28 +14,46 @@ import threads.ServerThread;
  * Created by podesta on 11/04/15.
  */
 public class GridManager extends JFrame {
-    GridManager(ServerThread st) {
+    ServerThread _st;
+    GroupLayout layout;
+    GroupLayout.ParallelGroup _verticalGroup;
+    GroupLayout.SequentialGroup _horizontalGroup;
+
+   public GridManager(ServerThread st) {
         super("Manager");
+        _st = st;
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(400, 400);
+        this.update();
+
+    }
+
+//    public void update() { //recriar o grid
+//        GroupLayout layout = this.getLayout();
+//        this.setHorizontalGroup(layout.createSequentialGroup());
+//        this.setVerticalGroup(layout.createParallelGroup());
+//        this.repaint();
+//    }
+
+    public void update() {
         JPanel jp = new JPanel();
         JScrollPane js = new JScrollPane(jp);
-        GroupLayout layout = new GroupLayout(jp);
+        layout = new GroupLayout(jp);
         jp.setLayout(layout);
         this.setContentPane(js);
-        ArrayList<ClientThread> clients = st.getClients();
+        ArrayList<ClientThread> clients = _st.getClients();
         GroupLayout.ParallelGroup hg = layout.createParallelGroup();
         GroupLayout.SequentialGroup vg = layout.createSequentialGroup();
 
-        GroupLayout.SequentialGroup horizontalGroup = layout.createSequentialGroup();
-        GroupLayout.ParallelGroup verticalGroup = layout.createParallelGroup();
+        _horizontalGroup = layout.createSequentialGroup();
+        _verticalGroup = layout.createParallelGroup();
         int count = 0;
         for (ClientThread cl : clients) {
             if (count % 4 == 0) {
-                horizontalGroup = layout.createSequentialGroup();
-                verticalGroup = layout.createParallelGroup();
-                hg.addGroup(horizontalGroup);
-                vg.addGroup(verticalGroup);
+                _horizontalGroup = layout.createSequentialGroup();
+                _verticalGroup = layout.createParallelGroup();
+                hg.addGroup(_horizontalGroup);
+                vg.addGroup(_verticalGroup);
 
             }
             //BufferedImage image;
@@ -47,21 +65,20 @@ public class GridManager extends JFrame {
             //}
             //image = resize(image, 400, 400);
             JLabel lb = new JLabel(cl.getLastScreenshot().getImage());
-            horizontalGroup.addComponent(lb);
-            verticalGroup.addComponent(lb);
+            _horizontalGroup.addComponent(lb);
+            _verticalGroup.addComponent(lb);
             count++;
         }
         layout.setHorizontalGroup(hg);
         layout.setVerticalGroup(vg);
     }
-    public BufferedImage resize(BufferedImage img, int newW, int newH) {
-        Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
-        BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D g2d = dimg.createGraphics();
-        g2d.drawImage(tmp, 0, 0, null);
-        g2d.dispose();
-
-        return dimg;
+    public GroupLayout getLayout() {
+        return layout;
+    }
+    public void setHorizontalGroup(GroupLayout.SequentialGroup horizontalGroup) {
+        _horizontalGroup = horizontalGroup;
+    }
+    public void setVerticalGroup(GroupLayout.ParallelGroup verticalGroup) {
+        _verticalGroup = verticalGroup;
     }
 }

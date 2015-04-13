@@ -1,8 +1,9 @@
-package others;
+package config;
 
 import org.json.simple.JSONObject;
 
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 
 /**
  * Created by paladini on 4/12/15.
