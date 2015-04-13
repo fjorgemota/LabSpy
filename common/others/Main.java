@@ -22,10 +22,10 @@ public class Main {
         // System.out.println("Will throw an exception");
 
         // Should create a configuration file at /var/lib/LabSpy/
-        config.setAddress("123.323.232.23");
+        //config.setAddress("123.323.232.23");
 
         // Loads configs from the file.
-        // System.out.println("Loading data from file: " + config.getAddress());
+        System.out.println("Loading data from file: " + config.getAddress());
 
 
     }
