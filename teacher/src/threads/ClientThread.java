@@ -11,8 +11,10 @@ import java.net.Socket;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-/**
- * Created by fernando on 11/04/15.
+/*!
+ * Classe que implementa as threads referentes ao cliente.
+ * Um cliente se comunicara com um servidor via envio de 
+ * mensagens via sockets.
  */
 public class ClientThread implements Runnable {
     private Socket sock;

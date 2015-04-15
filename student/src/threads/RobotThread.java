@@ -8,8 +8,10 @@ import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-/**
- * Created by fernando on 11/04/15.
+/*!
+ * Robo que e responsavel pela sincronizaçao do mouse do 
+ * computador servidor na tela do computador do cliente, quando
+ * este estiver recebendo a imagem da tela do servidor
  */
 public class RobotThread implements Runnable {
     private Queue<RobotMessage> send;
