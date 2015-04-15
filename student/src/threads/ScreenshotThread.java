@@ -5,8 +5,10 @@ import messages.ScreenshotRequest;
 
 import java.awt.*;
 
-/**
- * Created by fernando on 11/04/15.
+/*!
+ * Classe responsavel pela captura de tela em um computador
+ * cliente conectado a um servidor, tal captura pode ser enviada
+ * ao servidor
  */
 public class ScreenshotThread implements Runnable {
     private ClientThread client;

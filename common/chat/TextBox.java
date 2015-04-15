@@ -4,8 +4,10 @@ import javax.swing.*;
 import javax.swing.JScrollPane;
 import java.lang.String;
 
-/**
- * created by caique on 11/04/15.
+/*!
+ * Gerador de um janela de texto onde as mensagens
+ * serao escritas e enviadas a um outro usuario
+ * em que se esta em contato
  */
 public class TextBox extends JPanel {
 	private JButton send;

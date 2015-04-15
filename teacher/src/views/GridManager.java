@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import threads.ClientThread;
 import threads.ServerThread;
 
-/**
- * Created by podesta on 11/04/15.
+/*!
+ * Gerenciador em uma janela que permite que o servidor
+ * veja as varias capturas de imagens dos computadores dos 
+ * clientes 
  */
 public class GridManager extends JFrame {
     ServerThread _st;

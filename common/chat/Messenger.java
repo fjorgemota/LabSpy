@@ -4,8 +4,9 @@ import javax.swing.*;
 import java.util.ArrayList;
 import java.awt.*;
 
-/**
- * Created by caique on 12/04/15.
+/*!
+ * Classe que gera uma janela de bate-papo entre
+ * o cliente e o servidor.
  */
 public class Messenger extends JFrame {
     private TextBox textBox;
