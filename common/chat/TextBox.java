@@ -5,7 +5,7 @@ import javax.swing.JScrollPane;
 import java.lang.String;
 
 /*!
- * Gerador de um janela de texto onde as mensagens
+ * Gerador de uma janela de texto onde as mensagens
  * serao escritas e enviadas a um outro usuario
  * em que se esta em contato
  */

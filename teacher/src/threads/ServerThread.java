@@ -7,8 +7,7 @@ import java.util.ArrayList;
 
 /*!
  * Implementaçao de um servidor, que mantem contato
- * com um ou mais clientes. O servidor pede requisiçoes
- * ao cliente e este concede as informaçoes
+ * com um ou mais clientes.
  */
 public class ServerThread implements Runnable {
     private ArrayList<ClientThread> clients;
