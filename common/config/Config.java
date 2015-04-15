@@ -40,6 +40,16 @@ public class Config {
         saveFile();
     }
 
+    public String getComputerName() throws FileNotFoundException {
+        checkConfigSize();
+        return (String) configs.get("computer_name");
+    }
+
+    public void setComputerName(String computerName) {
+        configs.put("computer_name", computerName);
+        saveFile();
+    }
+
     public JSONObject getFullConfig() {
         return configs;
     }

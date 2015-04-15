@@ -1,14 +1,11 @@
 package views;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import threads.ClientThread;
-import threads.ServerThread;
+import communication.BaseClientThread;
+import communication.ClientThread;
+import communication.ServerThread;
+import messages.StartScreenshot;
 
 /*!
  * Gerenciador em uma janela que permite que o servidor
@@ -66,6 +63,9 @@ public class GridManager extends JFrame {
             //    return;
             //}
             //image = resize(image, 400, 400);
+            if (cl.getLastScreenshot() == null) {
+                continue;
+            }
             JLabel lb = new JLabel(cl.getLastScreenshot().getImage());
             _horizontalGroup.addComponent(lb);
             _verticalGroup.addComponent(lb);
@@ -73,14 +73,6 @@ public class GridManager extends JFrame {
         }
         layout.setHorizontalGroup(hg);
         layout.setVerticalGroup(vg);
-    }
-    public GroupLayout getLayout() {
-        return layout;
-    }
-    public void setHorizontalGroup(GroupLayout.SequentialGroup horizontalGroup) {
-        _horizontalGroup = horizontalGroup;
-    }
-    public void setVerticalGroup(GroupLayout.ParallelGroup verticalGroup) {
-        _verticalGroup = verticalGroup;
+        this.repaint();
     }
 }

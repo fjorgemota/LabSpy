@@ -1,4 +1,6 @@
-package threads;
+package communication;
+
+import messages.StartScreenshot;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -20,13 +22,18 @@ public class ServerThread implements Runnable {
         try {
             ServerSocket server = new ServerSocket(9500);
             while (true) {
+                System.out.println("Awaiting connection..");
                 Socket s = server.accept();
+                System.out.println("Connection accepted");
                 ClientThread cl = new ClientThread(s);
                 Thread client = new Thread(cl);
                 client.start();
+                cl.sendMessage(new StartScreenshot());
                 this.clients.add(cl);
             }
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     public ArrayList<ClientThread> getClients() {
         return clients;

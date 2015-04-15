@@ -1,4 +1,6 @@
 package messages;
 
 
-public interface BaseMessage {}
+import java.io.Serializable;
+
+public interface BaseMessage extends Serializable {}

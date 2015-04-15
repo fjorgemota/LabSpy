@@ -1,4 +1,4 @@
-package threads;
+package remote_control;
 
 
 import messages.*;
@@ -6,7 +6,10 @@ import messages.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /*!
  * Robo que e responsavel pela sincronizaçao do mouse do 
@@ -14,18 +17,19 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * este estiver recebendo a imagem da tela do servidor
  */
 public class RobotThread implements Runnable {
-    private Queue<RobotMessage> send;
-    private Queue<Screenshot> screenshots;
+    private BlockingQueue<RobotMessage> send;
+    private BlockingQueue<Screenshot> screenshots;
 
     public RobotThread() {
-        this.send = new ConcurrentLinkedQueue<RobotMessage>();
-        this.screenshots = new ConcurrentLinkedQueue<Screenshot>();
+        this.send = new LinkedBlockingQueue<>();
+        this.screenshots = new LinkedBlockingQueue<>();
     }
 
     @Override
     public void run() {
         try {
             Robot r = new Robot();
+            System.out.println("Executing robot thread..");
             while (true) {
                 RobotMessage msg = this.send.poll();
                 if(msg instanceof MousePressMessage) {
@@ -43,11 +47,12 @@ public class RobotThread implements Runnable {
                 } else if(msg instanceof ScreenshotRequest) {
                     ScreenshotRequest screenshotRequest = (ScreenshotRequest) msg;
                     BufferedImage buf = r.createScreenCapture(screenshotRequest.getRect());
+                    System.out.println("Saving screenshot..");
                     screenshots.add(new Screenshot(buf));
                 }
             }
         } catch(AWTException e) {
-            return;
+            e.printStackTrace();
         }
     }
 
@@ -56,7 +61,9 @@ public class RobotThread implements Runnable {
     }
 
     public Screenshot getLastScreenshot() {
+        System.out.println("Awaiting last screenshot..");
         while (this.screenshots.isEmpty()) {}
+        System.out.println("Screenshot received. Returning..");
         return this.screenshots.poll();
     }
 }

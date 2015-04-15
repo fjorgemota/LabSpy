@@ -1,4 +1,4 @@
-import others.Config;
+import config.Config;
 
 import javax.swing.*;
 
@@ -18,6 +18,14 @@ public class Setup {
 
         Config config = Config.getInstance();
         config.setAddress(input);
+
+        input = "";
+
+        while(input.isEmpty()) {
+            input = JOptionPane.showInputDialog("What's the name of this computer?");
+        }
+
+        config.setComputerName(input);
 
         JOptionPane.showMessageDialog(null, "The installation process was finished. Student computer should connect to the teacher's computer in the next reboot.");
 

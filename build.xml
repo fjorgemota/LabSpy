@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="labspy" default="all">
+  
+  
+  <property file="build.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/rcs/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.war"/>
+    <include name="*.ear"/>
+    <include name="*.apk"/>
+    <include name="*.zip"/>
+    <include name="*.swc"/>
+    <include name="*.ane"/>
+    <include name="*.egg"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.7" value="${jdk.home.1.7}/bin"/>
+  <path id="jdk.classpath.1.7">
+    <fileset dir="${jdk.home.1.7}">
+      <include name="jre/lib/plugin.jar"/>
+      <include name="jre/lib/resources.jar"/>
+      <include name="jre/lib/management-agent.jar"/>
+      <include name="jre/lib/jfr.jar"/>
+      <include name="jre/lib/javaws.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/jfxrt.jar"/>
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/deploy.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/sunec.jar"/>
+      <include name="jre/lib/ext/zipfs.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.7}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.7}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.7"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath">
+    <pathelement location="${basedir}/lib/json-simple-1.1.jar"/>
+    <pathelement location="${basedir}/lib/org.json.simple-0.4.jar"/>
+  </path>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module common -->
+  
+  <dirname property="module.common.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.common" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.common" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.common" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.common" value="-encoding UTF-8 -source 1.7 ${compiler.args}"/>
+  
+  <property name="common.output.dir" value="${module.common.basedir}/out/production/common"/>
+  <property name="common.testoutput.dir" value="${module.common.basedir}/out/test/common"/>
+  
+  <path id="common.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="common.module.production.classpath">
+    <path refid="${module.jdk.classpath.common}"/>
+    <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+  </path>
+  
+  <path id="common.runtime.production.module.classpath">
+    <pathelement location="${common.output.dir}"/>
+    <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+  </path>
+  
+  <path id="common.module.classpath">
+    <path refid="${module.jdk.classpath.common}"/>
+    <pathelement location="${common.output.dir}"/>
+    <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+  </path>
+  
+  <path id="common.runtime.module.classpath">
+    <pathelement location="${common.testoutput.dir}"/>
+    <pathelement location="${common.output.dir}"/>
+    <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.common">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.common">
+    <patternset refid="excluded.from.module.common"/>
+  </patternset>
+  
+  <path id="common.module.sourcepath">
+    <dirset dir="${module.common.basedir}">
+      <include name="common"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.common" depends="compile.module.common.production,compile.module.common.tests" description="Compile module common"/>
+  
+  <target name="compile.module.common.production" description="Compile module common; production classes">
+    <mkdir dir="${common.output.dir}"/>
+    <javac destdir="${common.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.common}/javac">
+      <compilerarg line="${compiler.args.common}"/>
+      <bootclasspath refid="common.module.bootclasspath"/>
+      <classpath refid="common.module.production.classpath"/>
+      <src refid="common.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.common"/>
+    </javac>
+    
+    <copy todir="${common.output.dir}">
+      <fileset dir="${module.common.basedir}/common">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.common.tests" depends="compile.module.common.production" description="compile module common; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.common" description="cleanup module">
+    <delete dir="${common.output.dir}"/>
+    <delete dir="${common.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module student -->
+  
+  <dirname property="module.student.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.student" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.student" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.student" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.student" value="-encoding UTF-8 -source 1.7 ${compiler.args}"/>
+  
+  <property name="student.output.dir" value="${module.student.basedir}/out/production/student"/>
+  <property name="student.testoutput.dir" value="${module.student.basedir}/out/test/student"/>
+  
+  <path id="student.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="student.module.production.classpath">
+    <path refid="${module.jdk.classpath.student}"/>
+    <pathelement location="${common.output.dir}"/>
+    <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+  </path>
+  
+  <path id="student.runtime.production.module.classpath">
+    <pathelement location="${student.output.dir}"/>
+    <pathelement location="${common.output.dir}"/>
+    <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+  </path>
+  
+  <path id="student.module.classpath">
+    <path refid="${module.jdk.classpath.student}"/>
+    <pathelement location="${student.output.dir}"/>
+    <pathelement location="${common.testoutput.dir}"/>
+    <pathelement location="${common.output.dir}"/>
+    <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+  </path>
+  
+  <path id="student.runtime.module.classpath">
+    <pathelement location="${student.testoutput.dir}"/>
+    <pathelement location="${student.output.dir}"/>
+    <pathelement location="${common.testoutput.dir}"/>
+    <pathelement location="${common.output.dir}"/>
+    <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.student">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.student">
+    <patternset refid="excluded.from.module.student"/>
+  </patternset>
+  
+  <path id="student.module.sourcepath">
+    <dirset dir="${module.student.basedir}/student">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.student" depends="compile.module.student.production,compile.module.student.tests" description="Compile module student"/>
+  
+  <target name="compile.module.student.production" depends="compile.module.common" description="Compile module student; production classes">
+    <mkdir dir="${student.output.dir}"/>
+    <javac destdir="${student.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.student}/javac">
+      <compilerarg line="${compiler.args.student}"/>
+      <bootclasspath refid="student.module.bootclasspath"/>
+      <classpath refid="student.module.production.classpath"/>
+      <src refid="student.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.student"/>
+    </javac>
+    
+    <copy todir="${student.output.dir}">
+      <fileset dir="${module.student.basedir}/student/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.student.tests" depends="compile.module.student.production" description="compile module student; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.student" description="cleanup module">
+    <delete dir="${student.output.dir}"/>
+    <delete dir="${student.testoutput.dir}"/>
+  </target>
+  
+  
+  <!-- Module teacher -->
+  
+  <dirname property="module.teacher.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.teacher" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.teacher" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.teacher" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.teacher" value="-encoding UTF-8 -source 1.7 ${compiler.args}"/>
+  
+  <property name="teacher.output.dir" value="${module.teacher.basedir}/out/production/teacher"/>
+  <property name="teacher.testoutput.dir" value="${module.teacher.basedir}/out/test/teacher"/>
+  
+  <path id="teacher.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="teacher.module.production.classpath">
+    <path refid="${module.jdk.classpath.teacher}"/>
+    <pathelement location="${common.output.dir}"/>
+    <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+  </path>
+  
+  <path id="teacher.runtime.production.module.classpath">
+    <pathelement location="${teacher.output.dir}"/>
+    <pathelement location="${common.output.dir}"/>
+    <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+  </path>
+  
+  <path id="teacher.module.classpath">
+    <path refid="${module.jdk.classpath.teacher}"/>
+    <pathelement location="${teacher.output.dir}"/>
+    <pathelement location="${common.testoutput.dir}"/>
+    <pathelement location="${common.output.dir}"/>
+    <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+  </path>
+  
+  <path id="teacher.runtime.module.classpath">
+    <pathelement location="${teacher.testoutput.dir}"/>
+    <pathelement location="${teacher.output.dir}"/>
+    <pathelement location="${common.testoutput.dir}"/>
+    <pathelement location="${common.output.dir}"/>
+    <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.teacher">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.teacher">
+    <patternset refid="excluded.from.module.teacher"/>
+  </patternset>
+  
+  <path id="teacher.module.sourcepath">
+    <dirset dir="${module.teacher.basedir}/teacher">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.teacher" depends="compile.module.teacher.production,compile.module.teacher.tests" description="Compile module teacher"/>
+  
+  <target name="compile.module.teacher.production" depends="compile.module.common" description="Compile module teacher; production classes">
+    <mkdir dir="${teacher.output.dir}"/>
+    <javac destdir="${teacher.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.teacher}/javac">
+      <compilerarg line="${compiler.args.teacher}"/>
+      <bootclasspath refid="teacher.module.bootclasspath"/>
+      <classpath refid="teacher.module.production.classpath"/>
+      <src refid="teacher.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.teacher"/>
+    </javac>
+    
+    <copy todir="${teacher.output.dir}">
+      <fileset dir="${module.teacher.basedir}/teacher/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.teacher.tests" depends="compile.module.teacher.production" description="compile module teacher; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.teacher" description="cleanup module">
+    <delete dir="${teacher.output.dir}"/>
+    <delete dir="${teacher.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.common, clean.module.student, clean.module.teacher" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.common, compile.module.student, compile.module.teacher" description="build all modules"/>
+  
+  <target name="all" depends="build.modules" description="build all"/>
+</project>
