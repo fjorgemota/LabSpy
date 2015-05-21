@@ -14,12 +14,11 @@ import org.json.simple.JSONObject;
 
 public class Config {
     
-    private String pathToSave = null;
+    private String pathToSave = "/var/lib/LabSpy/config.json";
     private JSONObject configs = null;
     private static Config singleton = null;
 
     private Config() {
-        discoverPathToSave();
         checkAndParseFile();
     }
 
@@ -70,14 +69,6 @@ public class Config {
             fw.close();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void discoverPathToSave() {
-        if(System.getProperty("os.name").startsWith("Linux")) {
-            pathToSave = "/var/lib/LabSpy/config.json";
-        } else {
-            pathToSave = "%APPDATA%\\LabSpy\\config.json";
         }
     }
 
