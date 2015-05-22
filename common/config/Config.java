@@ -9,84 +9,99 @@ package config;
  */
 
 import java.io.*;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Config {
     
-    private String pathToSave = "/var/lib/LabSpy/config.json";
-    private JSONObject configs = null;
+    private String pathToSave = "/var/lib/LabSpy/config.obj";
     private static Config singleton = null;
+    private List<Computer> computers;
 
     private Config() {
+        computers = new ArrayList<Computer>();
         checkAndParseFile();
     }
 
     public static Config getInstance() {
-        if(singleton == null) {
+        if (singleton == null) {
             singleton = new Config();
         }
         return singleton;
     }
 
-    public String getAddress() throws FileNotFoundException {
-        checkConfigSize();
-        return (String) configs.get("hostname");
+    public void addComputer(Computer computer) {
+        if (!computerExists(computer.getIp())) {
+            this.computers.add(computer);
+            saveFile();
+        }
     }
-
-    public void setAddress(String address) {
-        configs.put("hostname", address);
+    public void addComputer(int pos, Computer computer) {
+        if (!computerExists(computer.getIp())) {
+            this.computers.add(pos, computer);
+            saveFile();
+        }
+    }
+    public void replaceComputer(int pos, Computer computer) {
+        this.computers.set(pos, computer);
         saveFile();
     }
-
-    public String getComputerName() throws FileNotFoundException {
-        checkConfigSize();
-        return (String) configs.get("computer_name");
-    }
-
-    public void setComputerName(String computerName) {
-        configs.put("computer_name", computerName);
+    public void removeComputer(Computer computer) {
+        this.computers.remove(computer);
         saveFile();
     }
-
-    public JSONObject getFullConfig() {
-        return configs;
+    public void removeComputer(int pos) {
+        this.computers.remove(pos);
+        saveFile();
+    }
+    public Computer getComputer(String ip) {
+        for(Computer c : this.computers) {
+            if (c.getIp().equalsIgnoreCase(ip)) {
+                return c;
+            }
+        }
+        return null; // better to throw an exception?
+    }
+    public Computer getComputer(int pos) {
+        return this.computers.get(pos);
+    }
+    public List<Computer> getComputers() {
+        return this.computers;
     }
 
     private void saveFile() {
         try {
-            File file = new File(pathToSave);
+            OutputStream buffer = new BufferedOutputStream(new FileOutputStream(pathToSave));
+            ObjectOutput output = new ObjectOutputStream(buffer);
 
-            // Create the folders.
-            if(!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
+           try {
+               output.writeObject(computers);
+           } finally {
+               output.close();
+           }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private void checkAndParseFile() {
+        try {
+            InputStream buffer = new BufferedInputStream(new FileInputStream(pathToSave));
+            ObjectInput input = new ObjectInputStream(buffer);
+
+            try {
+                computers = (ArrayList<Computer>) input.readObject();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
-            file.createNewFile();
-
-            FileWriter fw = new FileWriter(file);
-            fw.write(configs.toJSONString());
-            fw.flush();
-            fw.close();
+        } catch (FileNotFoundException e) {
+           // e.printStackTrace(); I've disabled that because it's pretty common.
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void checkAndParseFile() {
-        try {
-            JSONParser parser = new JSONParser();
-            configs = (JSONObject) parser.parse(new FileReader(this.pathToSave));
-        } catch (FileNotFoundException e) {
-            configs = new JSONObject();
-        } catch (Exception e) { e.printStackTrace(); }
+    private boolean computerExists(String ip) {
+        return getComputer(ip) != null;
     }
-
-    private void checkConfigSize() throws FileNotFoundException {
-        if (configs.size() == 0) {
-            throw new FileNotFoundException();
-        }
-    }
-
-
 
 }
