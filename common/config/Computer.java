@@ -10,7 +10,7 @@ public class Computer implements Serializable {
 
     private String ip;
 
-    Computer(String ip) {
+    public Computer(String ip) {
         this.ip = ip;
     }
 
@@ -19,6 +19,10 @@ public class Computer implements Serializable {
     }
 
     public String getIp() {
+        return this.ip;
+    }
+    
+    public String toString() {
         return this.ip;
     }
 
