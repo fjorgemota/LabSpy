@@ -68,6 +68,15 @@ public class Config {
     public List<Computer> getComputers() {
         return this.computers;
     }
+    
+    public boolean firstTime() {
+            File f = new File(pathToSave);
+            if (!f.exists()) {
+                saveFile();
+                return true;
+            }
+            return false;
+    }
 
     private void saveFile() {
         try {
@@ -94,7 +103,7 @@ public class Config {
                 e.printStackTrace();
             }
         } catch (FileNotFoundException e) {
-           // e.printStackTrace(); I've disabled that because it's pretty common.
+            // e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

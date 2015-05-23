@@ -3,11 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package computermanager;
+package views;
 
 import javax.swing.DefaultListModel;
 import config.*;
 import java.util.List;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -24,8 +25,10 @@ public class ComputerManager extends javax.swing.JFrame {
      */
     public ComputerManager() {
         initComponents();
-        config = Config.getInstance();
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         
+        config = Config.getInstance();
         computerList_list.setFixedCellHeight(30);
         computerList_list.setFont(computerList_list.getFont().deriveFont(16.0f));
         updateList();
@@ -182,7 +185,6 @@ public class ComputerManager extends javax.swing.JFrame {
             public void run() {
                 ComputerManager cm = new ComputerManager();
                 cm.setVisible(true);
-                cm.setLocationRelativeTo(null);
             }
         });
     }
