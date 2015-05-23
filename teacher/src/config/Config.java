@@ -8,9 +8,9 @@ package config;
  *      http://stackoverflow.com/a/2243910/2127383
  */
 
-import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.*;
 
 public class Config {
     
