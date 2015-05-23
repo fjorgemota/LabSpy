@@ -14,7 +14,7 @@ import java.io.*;
 
 public class Config {
     
-    private String pathToSave = "/var/lib/LabSpy/config.obj";
+    private final String pathToSave = "/var/lib/LabSpy/config.obj";
     private static Config singleton = null;
     private List<Computer> computers;
 
