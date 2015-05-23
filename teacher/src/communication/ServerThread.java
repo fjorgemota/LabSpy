@@ -3,8 +3,13 @@ package communication;
 import messages.StartScreenshot;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 
 /*!
@@ -20,10 +25,19 @@ public class ServerThread implements Runnable {
     @Override
     public void run() {
         try {
-            ServerSocket server = new ServerSocket(9500);
+            Selector selector = Selector.open();
+            ServerSocketChannel server = ServerSocketChannel.open();
+            server.configureBlocking(false);
+            server.bind(new InetSocketAddress("0.0.0.0", 9500));
+            server.register(selector, SelectionKey.OP_ACCEPT);
+            System.out.println("Awaiting connection..");
             while (true) {
-                System.out.println("Awaiting connection..");
-                Socket s = server.accept();
+                int num = selector.select();
+                if (num == 0) {
+                    continue;
+                }
+                SocketChannel s = server.accept();
+                s.configureBlocking(false);
                 System.out.println("Connection accepted");
                 ClientThread cl = new ClientThread(s);
                 Thread client = new Thread(cl);

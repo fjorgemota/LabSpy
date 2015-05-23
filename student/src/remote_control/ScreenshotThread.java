@@ -30,7 +30,6 @@ public class ScreenshotThread implements Runnable {
         System.out.println("Executing screenshot thread..");
         Rectangle screen = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
         while(this.run) {
-            System.out.println("Putting screenshot request into robot..");
             robot.sendMessage(new ScreenshotRequest(screen));
             Screenshot screenshot = robot.getLastScreenshot();
             this.client.sendMessage(screenshot);

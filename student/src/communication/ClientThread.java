@@ -8,6 +8,7 @@ import remote_control.RobotThread;
 import remote_control.ScreenshotThread;
 
 import java.net.Socket;
+import java.nio.channels.SocketChannel;
 
 /**
  * Classe que implementa as threads referentes ao cliente.
@@ -18,7 +19,7 @@ public class ClientThread extends BaseClientThread {
     private ScreenshotThread screenshotThread;
     private RobotThread robotThread;
 
-    public ClientThread(Socket sock, RobotThread robot) {
+    public ClientThread(SocketChannel sock, RobotThread robot) {
         super(sock);
         this.robotThread = robot;
         this.screenshotThread = new ScreenshotThread(this, this.robotThread);

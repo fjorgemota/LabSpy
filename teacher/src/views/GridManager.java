@@ -15,12 +15,21 @@ import messages.StartScreenshot;
 public class GridManager extends JFrame {
     ServerThread _st;
     GroupLayout layout;
+
+    JPanel jp;
+    JScrollPane js;
     GroupLayout.ParallelGroup _verticalGroup;
     GroupLayout.SequentialGroup _horizontalGroup;
 
    public GridManager(ServerThread st) {
         super("Manager");
         _st = st;
+        jp = new JPanel();
+
+        layout = new GroupLayout(jp);
+        js =  new JScrollPane(jp);
+        jp.setLayout(layout);
+        this.setContentPane(js);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(400, 400);
         this.update();
@@ -35,15 +44,10 @@ public class GridManager extends JFrame {
 //    }
 
     public void update() {
-        JPanel jp = new JPanel();
-        JScrollPane js = new JScrollPane(jp);
-        layout = new GroupLayout(jp);
-        jp.setLayout(layout);
-        this.setContentPane(js);
         ArrayList<ClientThread> clients = _st.getClients();
         GroupLayout.ParallelGroup hg = layout.createParallelGroup();
         GroupLayout.SequentialGroup vg = layout.createSequentialGroup();
-
+        jp.removeAll();
         _horizontalGroup = layout.createSequentialGroup();
         _verticalGroup = layout.createParallelGroup();
         int count = 0;
@@ -66,6 +70,7 @@ public class GridManager extends JFrame {
             if (cl.getLastScreenshot() == null) {
                 continue;
             }
+            System.out.println("Processando cliente "+count+"..");
             JLabel lb = new JLabel(cl.getLastScreenshot().getImage());
             _horizontalGroup.addComponent(lb);
             _verticalGroup.addComponent(lb);
@@ -73,6 +78,11 @@ public class GridManager extends JFrame {
         }
         layout.setHorizontalGroup(hg);
         layout.setVerticalGroup(vg);
+        jp.revalidate();
+        jp.repaint();
+        js.revalidate();
+        js.repaint();
+        this.revalidate();
         this.repaint();
     }
 }
