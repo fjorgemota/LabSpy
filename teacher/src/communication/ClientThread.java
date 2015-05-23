@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.nio.channels.SocketChannel;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -20,7 +21,7 @@ public class ClientThread extends BaseClientThread {
     private Screenshot lastScreenshot;
     private InfoMessage info;
 
-    public ClientThread(Socket sock) {
+    public ClientThread(SocketChannel sock) {
         super(sock);
         this.info = null;
         this.lastScreenshot = null;

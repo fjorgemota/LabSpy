@@ -2,10 +2,10 @@ package views;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import communication.BaseClientThread;
+import java.util.Collection;
+
 import communication.ClientThread;
-import communication.ServerThread;
-import messages.StartScreenshot;
+import communication.ConnectorThread;
 
 /*!
  * Gerenciador em uma janela que permite que o servidor
@@ -13,14 +13,19 @@ import messages.StartScreenshot;
  * clientes 
  */
 public class GridManager extends JFrame {
-    ServerThread _st;
+    ConnectorThread _st;
     GroupLayout layout;
-    GroupLayout.ParallelGroup _verticalGroup;
-    GroupLayout.SequentialGroup _horizontalGroup;
+    JPanel jp;
+    JScrollPane js;
 
-   public GridManager(ServerThread st) {
-        super("Manager");
+   public GridManager(ConnectorThread st) {
+        super("LabSpy");
         _st = st;
+        jp = new JPanel();
+        js = new JScrollPane(jp);
+        layout = new GroupLayout(jp);
+        jp.setLayout(layout);
+        this.setContentPane(js);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(400, 400);
         this.update();
@@ -35,17 +40,13 @@ public class GridManager extends JFrame {
 //    }
 
     public void update() {
-        JPanel jp = new JPanel();
-        JScrollPane js = new JScrollPane(jp);
-        layout = new GroupLayout(jp);
-        jp.setLayout(layout);
-        this.setContentPane(js);
-        ArrayList<ClientThread> clients = _st.getClients();
+        Collection<ClientThread> clients = _st.getClients();
         GroupLayout.ParallelGroup hg = layout.createParallelGroup();
         GroupLayout.SequentialGroup vg = layout.createSequentialGroup();
+        jp.removeAll();
+        GroupLayout.ParallelGroup _verticalGroup = layout.createParallelGroup();
+        GroupLayout.SequentialGroup _horizontalGroup = layout.createSequentialGroup();
 
-        _horizontalGroup = layout.createSequentialGroup();
-        _verticalGroup = layout.createParallelGroup();
         int count = 0;
         for (ClientThread cl : clients) {
             if (count % 4 == 0) {
@@ -63,9 +64,11 @@ public class GridManager extends JFrame {
             //    return;
             //}
             //image = resize(image, 400, 400);
+
             if (cl.getLastScreenshot() == null) {
                 continue;
             }
+            System.out.println("Processando cliente "+count);
             JLabel lb = new JLabel(cl.getLastScreenshot().getImage());
             _horizontalGroup.addComponent(lb);
             _verticalGroup.addComponent(lb);
@@ -73,6 +76,11 @@ public class GridManager extends JFrame {
         }
         layout.setHorizontalGroup(hg);
         layout.setVerticalGroup(vg);
+        jp.revalidate();
+        jp.repaint();
+        js.revalidate();
+        js.repaint();
+        this.revalidate();
         this.repaint();
     }
 }
