@@ -29,11 +29,12 @@ public abstract class BaseClientThread implements Runnable {
     public BaseClientThread(SocketChannel sock) {
         this.sock = sock;
         this.stopped = false;
-        this.send = new LinkedBlockingQueue<>();
+        this.send = new LinkedBlockingQueue<>(100);
     }
 
     public void stop() {
         this.stopped = true;
+        System.out.println("Parando BaseClientThread");
     }
 
     public boolean isRunning() {
@@ -53,13 +54,11 @@ public abstract class BaseClientThread implements Runnable {
                 if (num == 0) {
                     continue;
                 }
-                if (!this.sock.isConnected()) {
+                if (this.sock.socket().isClosed()) {
                     this.stop();
                 }
-                Iterator<SelectionKey> keys = selector.selectedKeys().iterator();
-                while(keys.hasNext()) {
-                    SelectionKey key = keys.next();
-                    keys.remove();
+                Set<SelectionKey> keys = selector.selectedKeys();
+                for (SelectionKey key: keys) {
                     if (key.isReadable()) {
                         if (readBuf == null) {
                             readBuf = ByteBuffer.allocate(128);
@@ -75,14 +74,18 @@ public abstract class BaseClientThread implements Runnable {
                                 readSize = interpreter.readInt();
                                 readBuf = ByteBuffer.allocate(readSize);
                             } else {
-                                this.receiveMessage((BaseMessage) interpreter.readObject());
+                                BaseMessage message = (BaseMessage) interpreter.readUnshared();
+                                System.out.println("Recebida mensagem "+message);
+                                this.receiveMessage(message);
+                                System.out.println("Processada mensagem recebida " + message);
                                 readBuf = null;
                                 readSize = -1;
                             }
                         }
                     }
-                    if (key.isWritable()) {
+                    if (key.isWritable() && !this.send.isEmpty()) {
                         if (writeBuf == null) {
+                            System.out.println("Removendo mensagem da lista de mensagens enviadas");
                             writeBuf = this.send.poll();
                         }
                         if (writeBuf == null) {
@@ -90,10 +93,12 @@ public abstract class BaseClientThread implements Runnable {
                         }
                         this.sock.write(writeBuf);
                         if (writeBuf.remaining() == 0) {
+                            System.out.println("Se preparando para escrever proxima mensagem...");
                             writeBuf = null;
                         }
                     }
                 }
+                keys.clear();
             }
             selector.close();
             this.sock.close();
@@ -103,15 +108,18 @@ public abstract class BaseClientThread implements Runnable {
             e2.printStackTrace();
         }
         this.stop();
+        System.out.println("Fechando o BaseClientThread :v");
     }
 
     protected abstract void receiveMessage(BaseMessage msg);
 
     public synchronized void sendMessage(BaseMessage message) {
         try {
+            System.out.println("Tamanho da queue de escrita do BaseClientThread: "+this.send.size());
+            System.out.println("Escrevendo mensagem "+message);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream os = new ObjectOutputStream(baos);
-            os.writeObject(message);
+            os.writeUnshared(message);
             os.flush();
 
             ByteArrayOutputStream baosSize = new ByteArrayOutputStream();
@@ -122,13 +130,27 @@ public abstract class BaseClientThread implements Runnable {
             ByteBuffer buf = ByteBuffer.allocate(128);
             buf.put(baosSize.toByteArray());
             buf.rewind();
-            this.send.add(buf);
-
+            while (true) {
+                try {
+                    this.send.put(buf);
+                } catch(InterruptedException e) {
+                    continue;
+                }
+                break;
+            }
 
             buf = ByteBuffer.allocate(baos.size());
             buf.put(baos.toByteArray());
             buf.rewind();
-            this.send.add(buf);
+
+            while (true) {
+                try {
+                    this.send.put(buf);
+                } catch(InterruptedException e) {
+                    continue;
+                }
+                break;
+            }
         }
         catch (IOException e){
             e.printStackTrace();

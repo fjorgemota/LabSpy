@@ -1,9 +1,6 @@
 package communication;
 
-import messages.BaseMessage;
-import messages.RobotMessage;
-import messages.StartScreenshot;
-import messages.StopScreenshot;
+import messages.*;
 import remote_control.RobotThread;
 import remote_control.ScreenshotThread;
 
@@ -19,10 +16,12 @@ import java.nio.channels.SocketChannel;
 public class ClientThread extends BaseClientThread {
     private ScreenshotThread screenshotThread;
     private RobotThread robotThread;
+    private long lastScreenshot;
 
     public ClientThread(SocketChannel sock, RobotThread robot) {
         super(sock);
         this.robotThread = robot;
+        this.lastScreenshot = System.currentTimeMillis()+1000;
         this.screenshotThread = new ScreenshotThread(this, this.robotThread, new Rectangle(400, 300));
     }
 
@@ -30,14 +29,30 @@ public class ClientThread extends BaseClientThread {
         super.stop();
         this.screenshotThread.stop();
     }
+
+    @Override
+    public synchronized void sendMessage(BaseMessage message) {
+        if (message instanceof Screenshot) {
+            long now = System.currentTimeMillis();
+            System.out.println(now+" > "+this.lastScreenshot);
+            if (now > this.lastScreenshot) {
+                super.sendMessage(message);
+                this.lastScreenshot = now+(1000);
+            }
+        } else {
+            super.sendMessage(message);
+        }
+    }
+
     @Override
     protected void receiveMessage(BaseMessage msg) {
+        System.out.println("Recebida mensagem");
         if (msg instanceof StartScreenshot) {
             System.out.println("Starting screenshot thread");
             this.screenshotThread.stop();
             this.screenshotThread = new ScreenshotThread(this, this.robotThread, ((StartScreenshot) msg).getRect());
-            Thread thread = new Thread(this.screenshotThread);
-            thread.start();
+            Thread screenshotThreadReal = new Thread(this.screenshotThread);
+            screenshotThreadReal.start();
         } else if (msg instanceof StopScreenshot) {
             this.screenshotThread.stop();
         } else if (msg instanceof RobotMessage) {

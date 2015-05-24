@@ -16,10 +16,12 @@ import java.util.concurrent.*;
 public class RobotThread implements Runnable {
     private BlockingQueue<RobotMessage> send;
     private BlockingQueue<Screenshot> screenshots;
+    private MouseMoveMessage position;
 
     public RobotThread() {
-        this.send = new LinkedBlockingQueue<>(10000);
-        this.screenshots = new LinkedBlockingQueue<>(100);
+        this.send = new LinkedBlockingQueue<>(100);
+        this.screenshots = new LinkedBlockingQueue<>(2);
+        this.position = null;
     }
 
     @Override
@@ -28,39 +30,41 @@ public class RobotThread implements Runnable {
             Robot r = new Robot();
             System.out.println("Executing robot thread..");
             Rectangle screen = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-            r.setAutoWaitForIdle(true);
             while (true) {
+                System.out.println("Tamanho da queue do RobotThread: "+this.send.size());
                 RobotMessage msg = null;
                 while (msg == null) {
                     try {
-                        msg = this.send.take();
+                        msg = this.send.poll(1000/20, TimeUnit.MILLISECONDS);
                     } catch (InterruptedException e) {
                         continue;
+                    }
+                    if (this.position != null) {
+                        int x = (int) ((
+                                screen.getWidth() / ((double) this.position.getWidth())
+                        ) * this.position.getX());
+                        int y = (int) ((
+                                screen.getHeight() / ((double) this.position.getHeight()))
+                                * this.position.getY());
+                        r.mouseMove(x, y);
+                        r.waitForIdle();
+                        this.position = null;
                     }
                 }
 
                 try {
                     if (msg instanceof KeyPressMessage) {
+                        System.out.println("Pressionando tecla do teclado");
                         r.keyPress(((KeyPressMessage) msg).getKeyCode());
                     } else if (msg instanceof KeyReleaseMessage) {
+                        System.out.println("Soltando tecla do teclado");
                         r.keyPress(((KeyReleaseMessage) msg).getKeyCode());
-                    } else if (msg instanceof MouseClickMessage) {
-                        MouseClickMessage click = (MouseClickMessage) msg;
-                        r.mousePress(click.getButton());
-                        r.mouseRelease(click.getButton());
                     } else if (msg instanceof MousePressMessage) {
+                        System.out.println("Pressionando botao do mouse");
                         MousePressMessage press = (MousePressMessage) msg;
                         r.mousePress(press.getButton());
-                    } else if (msg instanceof MouseMoveMessage) {
-                        MouseMoveMessage move = (MouseMoveMessage) msg;
-                        int x = (int) ((
-                                screen.getWidth() / ((double) move.getWidth())
-                        ) * move.getX());
-                        int y = (int) ((
-                                screen.getHeight() / ((double) move.getHeight()))
-                                * move.getY());
-                        r.mouseMove(x, y);
                     } else if (msg instanceof MouseReleaseMessage) {
+                        System.out.println("Soltando botao do mouse");
                         MouseReleaseMessage release = (MouseReleaseMessage) msg;
                         r.mouseRelease(release.getButton());
                     } else if (msg instanceof MouseWheelMessage) {
@@ -69,28 +73,26 @@ public class RobotThread implements Runnable {
                     } else if (msg instanceof ScreenshotRequest) {
                         ScreenshotRequest screenshotRequest = (ScreenshotRequest) msg;
                         BufferedImage buf = r.createScreenCapture(screenshotRequest.getRect());
-                        while (true) {
-                            try {
-                                screenshots.put(new Screenshot(buf));
-                            } catch (InterruptedException e3) {
-                                continue;
-                            }
-                            break;
-                        }
+                        screenshots.offer(new Screenshot(buf));
                     }
                 } catch(IllegalArgumentException e2) {
-                    continue;
+                    e2.printStackTrace();
                 }
+                r.waitForIdle();
             }
         } catch(AWTException e) {
             e.printStackTrace();
         }
     }
 
-    public void sendMessage(RobotMessage msg) {
+    public synchronized void sendMessage(RobotMessage msg) {
         while (true) {
             try {
-                this.send.put(msg);
+                if (msg instanceof MouseMoveMessage) {
+                    this.position = (MouseMoveMessage) msg;
+                } else {
+                    this.send.put(msg);
+                }
             } catch (InterruptedException e) {
                 continue;
             }
@@ -100,6 +102,7 @@ public class RobotThread implements Runnable {
 
     public Screenshot getLastScreenshot() {
         Screenshot result = null;
+        System.out.println("Tamanho da queue de screenshots: "+this.send.size());
         while (result == null) {
             try {
                 result = this.screenshots.take();

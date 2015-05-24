@@ -229,7 +229,7 @@ public class InstallViewer extends javax.swing.JFrame {
     private javax.swing.JTextArea status_textarea;
     // End of variables declaration//GEN-END:variables
 
-    private void appendNewText(String txt) {
+    private void appendNewText(final String txt) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 status_textarea.setText(status_textarea.getText() + txt);

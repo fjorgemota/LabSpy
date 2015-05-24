@@ -21,6 +21,7 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.addMouseWheelListener(this);
+        this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.addKeyListener(this);
         this.setVisible(true);
         this.setSize(800, 600);
@@ -28,20 +29,44 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        for (int i=0; i< e.getClickCount(); i++) {
-            this.client.sendMessage(new MouseClickMessage(e.getButton()));
-        }
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        this.client.sendMessage(new MousePressMessage(e.getButton()));
-
+        System.out.println("Enviando mensagem de mouse com botao pressionado");
+        int button;
+        switch(e.getButton()) {
+            default:
+            case MouseEvent.BUTTON1:
+                button = InputEvent.BUTTON1_MASK;
+                break;
+            case MouseEvent.BUTTON2:
+                button = InputEvent.BUTTON2_MASK;
+                break;
+            case MouseEvent.BUTTON3:
+                button = InputEvent.BUTTON3_MASK;
+                break;
+        }
+        this.client.sendMessage(new MousePressMessage(button));
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        this.client.sendMessage(new MouseReleaseMessage(e.getButton()));
+        System.out.println("Enviando mensagem de mouse com botao solto");
+        int button;
+        switch(e.getButton()) {
+            default:
+            case MouseEvent.BUTTON1:
+                button = InputEvent.BUTTON1_MASK;
+                break;
+            case MouseEvent.BUTTON2:
+                button = InputEvent.BUTTON2_MASK;
+                break;
+            case MouseEvent.BUTTON3:
+                button = InputEvent.BUTTON3_MASK;
+                break;
+        }
+        this.client.sendMessage(new MouseReleaseMessage(button));
 
     }
 
@@ -57,6 +82,7 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
+        System.out.println("Enviando mensagem de mouse rolando");
         this.client.sendMessage(new MouseWheelMessage(e.getWheelRotation()));
 
     }
@@ -68,12 +94,15 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
 
     @Override
     public void keyPressed(KeyEvent e) {
+        System.out.println("Enviando mensagem de tecla pressionada");
         this.client.sendMessage(new KeyPressMessage(e.getKeyCode()));
 
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+
+        System.out.println("Enviando mensagem de tecla solta");
         this.client.sendMessage(new KeyReleaseMessage(e.getKeyCode()));
     }
 
@@ -104,9 +133,13 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
 
         this.setSize(width, height);
         this.setIgnoreRepaint(false);
+        client.sendMessage(new StopScreenshot());
         client.sendMessage(new StartScreenshot(new Rectangle(this.getWidth(), this.getHeight())));
         while (!this.stopped) {
-            if (this.getWidth() != width || this.getHeight() != height) {
+            t = (t++) % 40;
+            if (t == 0 && (this.getWidth() != width || this.getHeight() != height)) {
+                System.out.println("Enviando mensagem de redimensionamento");
+                client.sendMessage(new StopScreenshot());
                 client.sendMessage(new StartScreenshot(new Rectangle(this.getWidth(), this.getHeight())));
                 width = this.getWidth();
                 height = this.getHeight();
@@ -115,11 +148,13 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
             if (!this.client.isRunning()) {
                 this.dispose();
             }
-            t = (t++) % 10;
-            if (t == 0) {
-                this.client.sendMessage(position);
-            }
             if (this.isActive()) {
+                if (t == 0 && (this.position.getX() != x || this.position.getY() != y)) {
+                    System.out.println("Enviando mensagem de posicao do mouse");
+                    this.client.sendMessage(this.position);
+                    x = this.position.getX();
+                    y = this.position.getY();
+                }
                 this.repaint();
             }
             try {
@@ -138,8 +173,6 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
 
     @Override
     public void paint(Graphics g) {
-        super.paint(g); // paintComponent redesenha o painel
-        System.out.println("Calling repaint");
         Image img = this.client.getLastScreenshot().getImage().getImage();
         if (img == null) {
             return;

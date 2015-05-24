@@ -85,9 +85,23 @@
   
   <!-- Project Libraries -->
   
+  <path id="library.com.hierynomus:sshj:0.12.0.classpath">
+    <pathelement location="${basedir}/lib/bcpkix-jdk15on-1.51.jar"/>
+    <pathelement location="${basedir}/lib/bcprov-jdk15on-1.51.jar"/>
+    <pathelement location="${basedir}/lib/jzlib-1.1.3.jar"/>
+    <pathelement location="${basedir}/lib/slf4j-api-1.7.7.jar"/>
+    <pathelement location="${basedir}/lib/sshj-0.12.0.jar"/>
+  </path>
+  
   <path id="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath">
     <pathelement location="${basedir}/lib/json-simple-1.1.jar"/>
     <pathelement location="${basedir}/lib/org.json.simple-0.4.jar"/>
+  </path>
+  
+  <path id="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath">
+    <pathelement location="${basedir}/lib/log4j-api-2.1.jar"/>
+    <pathelement location="${basedir}/lib/log4j-to-slf4j-2.1.jar"/>
+    <pathelement location="${basedir}/lib/slf4j-api-1.7.7.jar"/>
   </path>
   
   <!-- Modules -->
@@ -114,23 +128,31 @@
   <path id="common.module.production.classpath">
     <path refid="${module.jdk.classpath.common}"/>
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+    <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
+    <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
   </path>
   
   <path id="common.runtime.production.module.classpath">
     <pathelement location="${common.output.dir}"/>
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+    <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
+    <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
   </path>
   
   <path id="common.module.classpath">
     <path refid="${module.jdk.classpath.common}"/>
     <pathelement location="${common.output.dir}"/>
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+    <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
+    <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
   </path>
   
   <path id="common.runtime.module.classpath">
     <pathelement location="${common.testoutput.dir}"/>
     <pathelement location="${common.output.dir}"/>
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+    <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
+    <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
   </path>
   
   
@@ -199,12 +221,16 @@
     <path refid="${module.jdk.classpath.student}"/>
     <pathelement location="${common.output.dir}"/>
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+    <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
+    <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
   </path>
   
   <path id="student.runtime.production.module.classpath">
     <pathelement location="${student.output.dir}"/>
     <pathelement location="${common.output.dir}"/>
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+    <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
+    <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
   </path>
   
   <path id="student.module.classpath">
@@ -213,6 +239,8 @@
     <pathelement location="${common.testoutput.dir}"/>
     <pathelement location="${common.output.dir}"/>
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+    <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
+    <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
   </path>
   
   <path id="student.runtime.module.classpath">
@@ -221,11 +249,14 @@
     <pathelement location="${common.testoutput.dir}"/>
     <pathelement location="${common.output.dir}"/>
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+    <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
+    <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
   </path>
   
   
   <patternset id="excluded.from.module.student">
     <patternset refid="ignored.files"/>
+    <exclude name="META-INF/**"/>
   </patternset>
   
   <patternset id="excluded.from.compilation.student">
@@ -289,12 +320,16 @@
     <path refid="${module.jdk.classpath.teacher}"/>
     <pathelement location="${common.output.dir}"/>
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+    <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
+    <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
   </path>
   
   <path id="teacher.runtime.production.module.classpath">
     <pathelement location="${teacher.output.dir}"/>
     <pathelement location="${common.output.dir}"/>
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+    <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
+    <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
   </path>
   
   <path id="teacher.module.classpath">
@@ -303,6 +338,8 @@
     <pathelement location="${common.testoutput.dir}"/>
     <pathelement location="${common.output.dir}"/>
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+    <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
+    <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
   </path>
   
   <path id="teacher.runtime.module.classpath">
@@ -311,6 +348,8 @@
     <pathelement location="${common.testoutput.dir}"/>
     <pathelement location="${common.output.dir}"/>
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
+    <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
+    <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
   </path>
   
   
@@ -325,6 +364,7 @@
   <path id="teacher.module.sourcepath">
     <dirset dir="${module.teacher.basedir}/teacher">
       <include name="src"/>
+      <include name="imagens"/>
     </dirset>
   </path>
   
@@ -346,6 +386,10 @@
         <patternset refid="compiler.resources"/>
         <type type="file"/>
       </fileset>
+      <fileset dir="${module.teacher.basedir}/teacher/imagens">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
     </copy>
   </target>
   
@@ -364,5 +408,61 @@
   
   <target name="build.modules" depends="init, clean, compile.module.common, compile.module.student, compile.module.teacher" description="build all modules"/>
   
-  <target name="all" depends="build.modules" description="build all"/>
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.student" value="${basedir}/out/artifacts/Student"/>
+    <property name="artifact.output.teacher" value="${basedir}/out/artifacts/Teacher"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.Student.jar" value="${artifacts.temp.dir}/Student.jar"/>
+    <property name="temp.jar.path.Teacher.jar" value="${artifacts.temp.dir}/Teacher.jar"/>
+  </target>
+  
+  <target name="artifact.student" depends="init.artifacts, compile.module.common, compile.module.student" description="Build &#39;Student&#39; artifact">
+    <property name="artifact.temp.output.student" value="${artifacts.temp.dir}/Student"/>
+    <mkdir dir="${artifact.temp.output.student}"/>
+    <jar destfile="${temp.jar.path.Student.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset dir="${common.output.dir}"/>
+      <zipfileset file="${basedir}/lib/sshj-0.12.0.jar"/>
+      <zipfileset file="${basedir}/lib/bcpkix-jdk15on-1.51.jar"/>
+      <zipfileset file="${basedir}/lib/bcprov-jdk15on-1.51.jar"/>
+      <zipfileset file="${basedir}/lib/jzlib-1.1.3.jar"/>
+      <zipfileset file="${basedir}/lib/slf4j-api-1.7.7.jar"/>
+      <zipfileset file="${basedir}/lib/log4j-to-slf4j-2.1.jar"/>
+      <zipfileset file="${basedir}/lib/slf4j-api-1.7.7.jar"/>
+      <zipfileset file="${basedir}/lib/log4j-api-2.1.jar"/>
+      <zipfileset file="${basedir}/lib/org.json.simple-0.4.jar"/>
+      <zipfileset file="${basedir}/lib/json-simple-1.1.jar"/>
+      <zipfileset dir="${student.output.dir}"/>
+      <zipfileset dir="${basedir}/student/src/META-INF" prefix="META-INF"/>
+    </jar>
+    <copy file="${temp.jar.path.Student.jar}" tofile="${artifact.temp.output.student}/Student.jar"/>
+  </target>
+  
+  <target name="artifact.teacher" depends="init.artifacts, compile.module.teacher, compile.module.common" description="Build &#39;Teacher&#39; artifact">
+    <property name="artifact.temp.output.teacher" value="${artifacts.temp.dir}/Teacher"/>
+    <mkdir dir="${artifact.temp.output.teacher}"/>
+    <jar destfile="${temp.jar.path.Teacher.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset dir="${teacher.output.dir}"/>
+      <zipfileset dir="${common.output.dir}"/>
+      <zipfileset dir="${basedir}/student/src/META-INF" prefix="META-INF"/>
+      <zipfileset dir="${basedir}/teacher/imagens" prefix="imagens"/>
+    </jar>
+    <copy file="${temp.jar.path.Teacher.jar}" tofile="${artifact.temp.output.teacher}/Teacher.jar"/>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.student, artifact.teacher" description="Build all artifacts">
+    <mkdir dir="${artifact.output.student}"/>
+    <copy todir="${artifact.output.student}">
+      <fileset dir="${artifact.temp.output.student}"/>
+    </copy>
+    <mkdir dir="${artifact.output.teacher}"/>
+    <copy todir="${artifact.output.teacher}">
+      <fileset dir="${artifact.temp.output.teacher}"/>
+    </copy>
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
 </project>

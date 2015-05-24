@@ -8,6 +8,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import communication.ClientThread;
 import communication.ConnectorThread;
@@ -23,6 +24,7 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
     JPanel jp;
     JScrollPane js;
     boolean stopped;
+    HashMap<String, JButton> buttons;
 
    public GridManager(ConnectorThread st) {
         super("LabSpy - Overview");
@@ -33,6 +35,7 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
         layout = new GroupLayout(jp);
         jp.setLayout(layout);
         stopped = false;
+        this.buttons = new HashMap<>();
         this.setContentPane(js);
         this.setSize(400, 400);
         this.update();
@@ -95,6 +98,7 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
         GroupLayout.ParallelGroup _verticalGroup = layout.createParallelGroup();
         GroupLayout.SequentialGroup _horizontalGroup = layout.createSequentialGroup();
         int count = 0;
+        ArrayList<String> seenIP = new ArrayList<>();
         for (ClientThread cl : clients) {
             if (count % 4 == 0) {
                 _horizontalGroup = layout.createSequentialGroup();
@@ -112,22 +116,43 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
             //}
             //image = resize(image, 400, 400);
 
-            if (cl.getLastScreenshot() == null) {
+            if (cl.getLastScreenshot() == null || !cl.isRunning()) {
                 continue;
             }
-            System.out.println("Processando cliente " + count);
-            JButton lb = new JButton(new ImageIcon(cl.getLastScreenshot().getImage().getImage().getScaledInstance(
-                    400,
-                    300,
-                    Image.SCALE_FAST
-            )));
-            lb.setActionCommand(cl.getComputer().getIp());
-            lb.addActionListener(this);
+            String ip = cl.getComputer().getIp();
+            seenIP.add(ip);
+            JButton lb;
+            if (this.buttons.containsKey(ip)) {
+                lb = this.buttons.get(ip);
+                lb.setIcon(new ImageIcon(cl.getLastScreenshot().getImage().getImage().getScaledInstance(
+                        400,
+                        300,
+                        Image.SCALE_FAST
+                )));
+            } else {
+                lb = new JButton(new ImageIcon(cl.getLastScreenshot().getImage().getImage().getScaledInstance(
+                        400,
+                        300,
+                        Image.SCALE_FAST
+                )));
+                lb.setActionCommand(ip);
+                lb.addActionListener(this);
+                this.buttons.put(ip, lb);
+            }
             _horizontalGroup.addComponent(lb);
             _verticalGroup.addComponent(lb);
             count++;
         }
-        jp.removeAll();
+        boolean removeAll = false;
+        for (String ip: this.buttons.keySet()) {
+            if (!seenIP.contains(ip)) {
+                removeAll = true;
+                this.buttons.remove(ip);
+            }
+        }
+        if (removeAll) {
+            jp.removeAll();
+        }
         layout.setHorizontalGroup(hg);
         layout.setVerticalGroup(vg);
         jp.revalidate();
