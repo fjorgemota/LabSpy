@@ -9,6 +9,6 @@ import views.LabSpy;
  */
 public class Main {
     public static void main(String[] args) {
-		LabSpy lab = new LabSpy();
+		LabSpy labSpy = new LabSpy();
 	}
 }

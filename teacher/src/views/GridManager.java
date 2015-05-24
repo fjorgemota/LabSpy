@@ -20,7 +20,7 @@ public class GridManager extends JFrame implements Runnable {
     boolean stopped;
 
    public GridManager(ConnectorThread st) {
-        super("Overview");
+        super("LabSpy - Overview");
         _st = st;
         jp = new JPanel();
         js = new JScrollPane(jp);

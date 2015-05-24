@@ -61,7 +61,7 @@ public class ComputerManager extends javax.swing.JFrame {
         addComputer_button = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("[LabSpy] Computer Manager");
+        setTitle("Computer Manager - LabSpy");
         setResizable(false);
 
         removeComputer_button.setText("Remove Computer");

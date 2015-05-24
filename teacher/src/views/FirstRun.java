@@ -92,15 +92,11 @@ public class FirstRun extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
-        LabSpy lab = new LabSpy();
-        lab.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton2MouseClicked
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
-        LabSpy lab = new LabSpy();
         ComputerManager cm = new ComputerManager(Config.getInstance());
-        lab.setVisible(true);
         cm.setVisible(true);
         dispose();
     }//GEN-LAST:event_jButton1MouseClicked
