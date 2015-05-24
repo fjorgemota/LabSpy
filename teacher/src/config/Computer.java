@@ -3,7 +3,7 @@ package config;
 import java.io.Serializable;
 
 /**
- * This class represents a Computer on the class. Each instance will have an associated IP address (that can be used for many things).
+ * Classe responsável por representar um computador (do estudante) no LabSpy. Cada máquina tem um endereço IP associada a ela.
  */
 public class Computer implements Serializable {
 

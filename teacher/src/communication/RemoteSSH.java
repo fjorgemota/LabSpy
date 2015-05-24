@@ -18,7 +18,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is responsible for connect via SSH from professor computer to student computer and execute commands in this last one.
+ * Classe responsável por conectar o computador do professor ao computador do estudante via SSH. Permite execução de comandos,
+ * criação de pastas e transferência de arquivos via SSH.
  */
 public class RemoteSSH {
 

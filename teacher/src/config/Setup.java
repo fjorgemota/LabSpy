@@ -6,7 +6,8 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * This class is responsible for setting-up the LabSpy client on the student machine. It should be called for each added machine.
+ * Esta classe é responsável por realizar o setup / instalação do Cliente LabSpy (máquinas dos alunos) em uma máquina.
+ * Utiliza classes como Computer e RemoteSSH para tal.
  *
  * TODO: Currently this class expects clientSRC to be an executable file. As labspy_client will not be an executable (it's a JAR file), we must create a .sh script to put in /etc/init.d/.
  */
