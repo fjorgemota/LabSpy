@@ -1,5 +1,6 @@
 package communication;
 
+import config.Computer;
 import messages.BaseMessage;
 import messages.InfoMessage;
 import messages.Screenshot;
@@ -20,16 +21,17 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class ClientThread extends BaseClientThread {
     private Screenshot lastScreenshot;
     private InfoMessage info;
+    private Computer computer;
 
-    public ClientThread(SocketChannel sock) {
+    public ClientThread(SocketChannel sock, Computer computer) {
         super(sock);
+        this.computer = computer;
         this.info = null;
         this.lastScreenshot = null;
     }
 
     protected void receiveMessage(BaseMessage msg) {
         if (msg instanceof Screenshot) {
-            System.out.println("Setando ultimo screenshot..");
             this.lastScreenshot = (Screenshot) msg;
         } else if (msg instanceof InfoMessage) {
             this.info = (InfoMessage) msg;
@@ -42,5 +44,9 @@ public class ClientThread extends BaseClientThread {
 
     public InfoMessage getInfo() {
         return this.info;
+    }
+
+    public Computer getComputer() {
+        return computer;
     }
 }

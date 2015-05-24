@@ -1,6 +1,11 @@
 package views;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -12,7 +17,7 @@ import communication.ConnectorThread;
  * veja as varias capturas de imagens dos computadores dos 
  * clientes 
  */
-public class GridManager extends JFrame implements Runnable {
+public class GridManager extends JFrame implements Runnable, ActionListener {
     ConnectorThread _st;
     GroupLayout layout;
     JPanel jp;
@@ -34,6 +39,7 @@ public class GridManager extends JFrame implements Runnable {
 
     }
 
+
     public void stop() {
         this.stopped = true;
     }
@@ -46,7 +52,7 @@ public class GridManager extends JFrame implements Runnable {
                 this.update();
             }
             try {
-                Thread.sleep(1000/40);
+                Thread.sleep(1000/20);
             } catch (InterruptedException e) {
                 continue;
             }
@@ -66,6 +72,21 @@ public class GridManager extends JFrame implements Runnable {
 //        this.setVerticalGroup(layout.createParallelGroup());
 //        this.repaint();
 //    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Collection<ClientThread> clients = _st.getClients();
+        for (ClientThread client: clients) {
+            if (client.getComputer().getIp().equals(e.getActionCommand())) {
+                BigScreen big = new BigScreen(client);
+                Thread thread = new Thread(big);
+                thread.start();
+                break;
+            }
+        }
+
+    }
 
     public void update() {
         Collection<ClientThread> clients = _st.getClients();
@@ -94,8 +115,14 @@ public class GridManager extends JFrame implements Runnable {
             if (cl.getLastScreenshot() == null) {
                 continue;
             }
-            System.out.println("Processando cliente "+count);
-            JLabel lb = new JLabel(cl.getLastScreenshot().getImage());
+            System.out.println("Processando cliente " + count);
+            JButton lb = new JButton(new ImageIcon(cl.getLastScreenshot().getImage().getImage().getScaledInstance(
+                    400,
+                    300,
+                    Image.SCALE_FAST
+            )));
+            lb.setActionCommand(cl.getComputer().getIp());
+            lb.addActionListener(this);
             _horizontalGroup.addComponent(lb);
             _verticalGroup.addComponent(lb);
             count++;

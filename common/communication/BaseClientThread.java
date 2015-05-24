@@ -41,7 +41,6 @@ public abstract class BaseClientThread implements Runnable {
     }
     @Override
     public void run() {
-        System.out.println("Conectando");
         try {
             Selector selector = Selector.open();
             this.sock.register(selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE);
@@ -63,7 +62,6 @@ public abstract class BaseClientThread implements Runnable {
                     keys.remove();
                     if (key.isReadable()) {
                         if (readBuf == null) {
-                            System.out.println("Allocating 128 bytes for receiving the size of the request");
                             readBuf = ByteBuffer.allocate(128);
                         }
                         if (this.sock.read(readBuf) == -1) {
@@ -75,11 +73,9 @@ public abstract class BaseClientThread implements Runnable {
                             ObjectInputStream interpreter = new ObjectInputStream(bias);
                             if (readSize == -1) {
                                 readSize = interpreter.readInt();
-                                System.out.println("Allocating "+readSize+" bytes to read the next object");
                                 readBuf = ByteBuffer.allocate(readSize);
                             } else {
                                 this.receiveMessage((BaseMessage) interpreter.readObject());
-                                System.out.println("Received message..");
                                 readBuf = null;
                                 readSize = -1;
                             }
@@ -96,8 +92,6 @@ public abstract class BaseClientThread implements Runnable {
                         if (writeBuf.remaining() == 0) {
                             writeBuf = null;
                         }
-
-                        System.out.println("Message sended..");
                     }
                 }
             }
@@ -108,7 +102,6 @@ public abstract class BaseClientThread implements Runnable {
         } catch(ClassNotFoundException e2) {
             e2.printStackTrace();
         }
-        System.out.println("Finishing client thread..");
         this.stop();
     }
 

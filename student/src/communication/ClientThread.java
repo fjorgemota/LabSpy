@@ -39,13 +39,10 @@ public class ClientThread extends BaseClientThread {
             Thread thread = new Thread(this.screenshotThread);
             thread.start();
         } else if (msg instanceof StopScreenshot) {
-            System.out.println("Stopping screenshot thread");
             this.screenshotThread.stop();
         } else if (msg instanceof RobotMessage) {
-            System.out.println("Sending message to robot..");
             this.robotThread.sendMessage((RobotMessage) msg);
         } else {
-            System.out.println("Received unknwon type of message..");
             System.out.println(msg.toString());
         }
     }
