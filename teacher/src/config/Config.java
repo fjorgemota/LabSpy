@@ -1,7 +1,5 @@
 package config;
 /**
- * Created by paladini on 4/11/15.
- *
  * The path chosen to write/read program config is based on the following answers on SO:
  *      http://stackoverflow.com/a/1510357/2127383
  *      http://stackoverflow.com/a/1510352/2127383

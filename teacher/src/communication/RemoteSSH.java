@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class is responsible for connect via SSH from professor computer to student computer and execute commands in this last one.
- * Created by paladini on 5/22/15.
  */
 public class RemoteSSH {
 
