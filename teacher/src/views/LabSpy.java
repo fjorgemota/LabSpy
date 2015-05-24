@@ -31,12 +31,18 @@ public class LabSpy extends javax.swing.JFrame implements ActionListener {
     static final String POWERDOWN = "POWERDOWN";
     static final String POWERUP = "POWERUP";
     private Config config;
+    private ConnectorThread connectorThread;
+    private GridManager g;
 
     /**
      * Creates new form LabSpy
      */
     public LabSpy() {
         super("LabSpy");
+        config = Config.getInstance();
+
+        connectorThread = new ConnectorThread(config);
+        g = new GridManager(connectorThread);
         //initComponents();
         //setLocationRelativeTo(null);
 
@@ -65,7 +71,7 @@ public class LabSpy extends javax.swing.JFrame implements ActionListener {
         itemConfig.addActionListener(this);
         config.add(itemConfig);
 
-        JMenuItem itemScreen = new JMenuItem("Schreenshot");
+        JMenuItem itemScreen = new JMenuItem("Screenshot");
         itemScreen.setActionCommand(SCREEN);
         itemScreen.addActionListener(this);
         overview.add(itemScreen);
@@ -86,8 +92,15 @@ public class LabSpy extends javax.swing.JFrame implements ActionListener {
         students.add(itemPowerUp);
 
 
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+        if (classLoader == null) {
+            classLoader = Class.class.getClassLoader();
+        }
+
         try {
-            this.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("/home/podesta/Desktop/SpyLabLogoLg.jpg")))));
+
+            this.setContentPane(new JLabel(new ImageIcon(ImageIO.read(classLoader.getResourceAsStream("imagens/SpyLabLogoLg.jpg")))));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -97,31 +110,19 @@ public class LabSpy extends javax.swing.JFrame implements ActionListener {
     }
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
+        connectorThread.stop();
+        g.stop();
         String command = actionEvent.getActionCommand();
         if (command.equals(CONFIGURATION)) {
-            config = Config.getInstance();
             checkFirstTime();
         } else if (command.equals(SCREEN)) { //This may change with the next modifications for client-server
-            Config configure = Config.getInstance();
-            if (configure.getComputers().size() == 0) {
-                configure.addComputer(new Computer("127.0.0.1"));
-                //JOptionPane.showMessageDialog(null, "Configure your PC!");
-            }
-           // } else {
+            Thread connector = new Thread(connectorThread);
+            connector.start();
+            g.setVisible(true);
 
-                ConnectorThread connectorThread = new ConnectorThread(configure);
-                Thread connector = new Thread(connectorThread);
-                connector.start();
-                GridManager g = new GridManager(connectorThread);
-                g.setVisible(true);
-                while (true) {
-                    g.update();
-                    try {
-                        Thread.sleep(1000);
-                    } catch (Exception e) {
-                    }
-                }
-           // }
+            Thread gridManagerView = new Thread(g);
+            gridManagerView.start();
+
         } else if (command.equals(CHAT)) {
             Messenger c = new Messenger();
             c.setVisible(true);
@@ -137,9 +138,9 @@ public class LabSpy extends javax.swing.JFrame implements ActionListener {
         if (config.firstTime()) {
             FirstRun fr = new FirstRun();
             fr.setVisible(true);
-            dispose();
         } else {
-            this.setVisible(true);
+            ComputerManager manager = new ComputerManager(config);
+            manager.setVisible(true);
         }
     }
 

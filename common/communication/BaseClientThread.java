@@ -102,6 +102,7 @@ public abstract class BaseClientThread implements Runnable {
                 }
             }
             selector.close();
+            this.sock.close();
         } catch(IOException e) {
             e.printStackTrace();
         } catch(ClassNotFoundException e2) {

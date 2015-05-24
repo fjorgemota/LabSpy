@@ -24,14 +24,27 @@ import java.util.List;
 public class ConnectorThread implements Runnable {
     Config configuration;
     HashMap<String, ClientThread> connections;
+    boolean stopped;
 
     public ConnectorThread(Config configuration) {
         this.configuration = configuration;
         this.connections = new HashMap<>();
+        this.stopped = false;
     }
+
+    public void stop() {
+        this.stopped = true;
+        Collection<ClientThread> clients = this.getClients();
+        for(ClientThread client: clients) {
+            client.stop();
+        }
+    }
+
     @Override
     public void run() {
-        while (true) {
+        this.stopped = false;
+        this.connections.clear();
+        while (!this.stopped) {
             List<Computer> computers = this.configuration.getComputers();
             ArrayList<String> seenIP = new ArrayList<>();
             for(Computer computer: computers) {

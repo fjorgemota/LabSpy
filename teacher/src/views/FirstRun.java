@@ -1,5 +1,7 @@
 package views;
 
+import config.Config;
+
 /**
  *
  * @author paladini
@@ -97,7 +99,7 @@ public class FirstRun extends javax.swing.JFrame {
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         LabSpy lab = new LabSpy();
-        ComputerManager cm = new ComputerManager();
+        ComputerManager cm = new ComputerManager(Config.getInstance());
         lab.setVisible(true);
         cm.setVisible(true);
         dispose();

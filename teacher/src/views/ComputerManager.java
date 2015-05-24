@@ -23,12 +23,12 @@ public class ComputerManager extends javax.swing.JFrame {
     /**
      * Creates new form ComputerManager
      */
-    public ComputerManager() {
+    public ComputerManager(Config config) {
         initComponents();
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         
-        config = Config.getInstance();
+        this.config = config;
         computerList_list.setFixedCellHeight(30);
         computerList_list.setFont(computerList_list.getFont().deriveFont(16.0f));
         updateList();
@@ -183,7 +183,7 @@ public class ComputerManager extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ComputerManager cm = new ComputerManager();
+                ComputerManager cm = new ComputerManager(Config.getInstance());
                 cm.setVisible(true);
             }
         });

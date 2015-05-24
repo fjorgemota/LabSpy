@@ -12,27 +12,55 @@ import communication.ConnectorThread;
  * veja as varias capturas de imagens dos computadores dos 
  * clientes 
  */
-public class GridManager extends JFrame {
+public class GridManager extends JFrame implements Runnable {
     ConnectorThread _st;
     GroupLayout layout;
     JPanel jp;
     JScrollPane js;
+    boolean stopped;
 
    public GridManager(ConnectorThread st) {
-        super("LabSpy");
+        super("Overview");
         _st = st;
         jp = new JPanel();
         js = new JScrollPane(jp);
+       this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         layout = new GroupLayout(jp);
         jp.setLayout(layout);
+        stopped = false;
         this.setContentPane(js);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(400, 400);
         this.update();
 
     }
 
-//    public void update() { //recriar o grid
+    public void stop() {
+        this.stopped = true;
+    }
+
+    @Override
+    public void run() {
+        this.stopped = false;
+        while (!this.stopped) {
+            if (this.isActive()) {
+                this.update();
+            }
+            try {
+                Thread.sleep(1000/40);
+            } catch (InterruptedException e) {
+                continue;
+            }
+        }
+        this._st.stop();
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        this.stopped = true;
+    }
+
+    //    public void update() { //recriar o grid
 //        GroupLayout layout = this.getLayout();
 //        this.setHorizontalGroup(layout.createSequentialGroup());
 //        this.setVerticalGroup(layout.createParallelGroup());
@@ -43,10 +71,8 @@ public class GridManager extends JFrame {
         Collection<ClientThread> clients = _st.getClients();
         GroupLayout.ParallelGroup hg = layout.createParallelGroup();
         GroupLayout.SequentialGroup vg = layout.createSequentialGroup();
-        jp.removeAll();
         GroupLayout.ParallelGroup _verticalGroup = layout.createParallelGroup();
         GroupLayout.SequentialGroup _horizontalGroup = layout.createSequentialGroup();
-
         int count = 0;
         for (ClientThread cl : clients) {
             if (count % 4 == 0) {
@@ -74,13 +100,10 @@ public class GridManager extends JFrame {
             _verticalGroup.addComponent(lb);
             count++;
         }
+        jp.removeAll();
         layout.setHorizontalGroup(hg);
         layout.setVerticalGroup(vg);
         jp.revalidate();
         jp.repaint();
-        js.revalidate();
-        js.repaint();
-        this.revalidate();
-        this.repaint();
     }
 }
