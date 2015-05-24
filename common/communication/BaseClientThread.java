@@ -71,15 +71,13 @@ public abstract class BaseClientThread implements Runnable {
                         }
                         if (readBuf.remaining() == 0) { // If there's no remaining buffer
                             readBuf.rewind();
+                            ByteArrayInputStream bias = new ByteArrayInputStream(readBuf.array());
+                            ObjectInputStream interpreter = new ObjectInputStream(bias);
                             if (readSize == -1) {
-                                ByteArrayInputStream bias = new ByteArrayInputStream(readBuf.array());
-                                ObjectInputStream interpreter = new ObjectInputStream(bias);
                                 readSize = interpreter.readInt();
                                 System.out.println("Allocating "+readSize+" bytes to read the next object");
                                 readBuf = ByteBuffer.allocate(readSize);
                             } else {
-                                ByteArrayInputStream bias = new ByteArrayInputStream(readBuf.array());
-                                ObjectInputStream interpreter = new ObjectInputStream(bias);
                                 this.receiveMessage((BaseMessage) interpreter.readObject());
                                 System.out.println("Received message..");
                                 readBuf = null;
@@ -115,20 +113,18 @@ public abstract class BaseClientThread implements Runnable {
 
     protected abstract void receiveMessage(BaseMessage msg);
 
-    public void sendMessage(BaseMessage message) {
+    public synchronized void sendMessage(BaseMessage message) {
         try {
-            System.out.println("Writing object..");
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             ObjectOutputStream os = new ObjectOutputStream(baos);
             os.writeObject(message);
-            System.out.println("Flushing..");
             os.flush();
 
             ByteArrayOutputStream baosSize = new ByteArrayOutputStream();
             ObjectOutputStream osSize = new ObjectOutputStream(baosSize);
             osSize.writeInt(baos.size());
-            System.out.println("Flushing..");
             osSize.flush();
+
             ByteBuffer buf = ByteBuffer.allocate(128);
             buf.put(baosSize.toByteArray());
             buf.rewind();

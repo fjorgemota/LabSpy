@@ -4,6 +4,7 @@ import config.Computer;
 import config.Config;
 import messages.StartScreenshot;
 
+import java.awt.*;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.InetSocketAddress;
@@ -14,6 +15,7 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.*;
+import java.util.List;
 
 /*!
  * Implementaçao de um servidor, que mantem contato
@@ -47,7 +49,7 @@ public class ConnectorThread implements Runnable {
                     continue;
                 }
                 ClientThread client = new ClientThread(connection);
-                client.sendMessage(new StartScreenshot());
+                client.sendMessage(new StartScreenshot(new Rectangle(400, 300)));
                 Thread clientThread = new Thread(client);
                 clientThread.start();
                 System.out.println("Putting "+computer.getIp()+" in hashmap");

@@ -9,6 +9,7 @@ public class Main {
     public static void main(String[] args) {
 		Config configuration = Config.getInstance();
 		if (configuration.getComputers().size() == 0) {
+			configuration.addComputer(new Computer("10.0.0.12"));
 			configuration.addComputer(new Computer("127.0.0.1"));
 		}
 		ConnectorThread connectorThread = new ConnectorThread(configuration);
@@ -19,7 +20,7 @@ public class Main {
 		while(true) {
 			g.update();
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(1000/40);
 			} catch (Exception e) {}
 		}
 	}

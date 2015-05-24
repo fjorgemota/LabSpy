@@ -7,6 +7,7 @@ import messages.StopScreenshot;
 import remote_control.RobotThread;
 import remote_control.ScreenshotThread;
 
+import java.awt.*;
 import java.net.Socket;
 import java.nio.channels.SocketChannel;
 
@@ -22,7 +23,7 @@ public class ClientThread extends BaseClientThread {
     public ClientThread(SocketChannel sock, RobotThread robot) {
         super(sock);
         this.robotThread = robot;
-        this.screenshotThread = new ScreenshotThread(this, this.robotThread);
+        this.screenshotThread = new ScreenshotThread(this, this.robotThread, new Rectangle(400, 300));
     }
 
     public void stop() {
@@ -34,7 +35,7 @@ public class ClientThread extends BaseClientThread {
         if (msg instanceof StartScreenshot) {
             System.out.println("Starting screenshot thread");
             this.screenshotThread.stop();
-            this.screenshotThread = new ScreenshotThread(this, this.robotThread);
+            this.screenshotThread = new ScreenshotThread(this, this.robotThread, ((StartScreenshot) msg).getRect());
             Thread thread = new Thread(this.screenshotThread);
             thread.start();
         } else if (msg instanceof StopScreenshot) {

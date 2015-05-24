@@ -6,10 +6,7 @@ import messages.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.*;
 
 /*!
  * Robo que e responsavel pela sincronizaçao do mouse do 
@@ -31,7 +28,14 @@ public class RobotThread implements Runnable {
             Robot r = new Robot();
             System.out.println("Executing robot thread..");
             while (true) {
-                RobotMessage msg = this.send.poll();
+                RobotMessage msg = null;
+                while (msg == null) {
+                    try {
+                        msg = this.send.take();
+                    } catch (InterruptedException e) {
+                        continue;
+                    }
+                }
                 if(msg instanceof MousePressMessage) {
                     MousePressMessage press = (MousePressMessage) msg;
                     r.mousePress(press.getButton());
@@ -61,9 +65,15 @@ public class RobotThread implements Runnable {
     }
 
     public Screenshot getLastScreenshot() {
-        System.out.println("Awaiting last screenshot..");
-        while (this.screenshots.isEmpty()) {}
-        System.out.println("Screenshot received. Returning..");
-        return this.screenshots.poll();
+        Screenshot result = null;
+        while (result == null) {
+            try {
+                result = this.screenshots.take();
+            }
+            catch (InterruptedException e){
+                continue;
+            }
+        }
+        return result;
     }
 }

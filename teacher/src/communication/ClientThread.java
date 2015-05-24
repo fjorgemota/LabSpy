@@ -29,7 +29,7 @@ public class ClientThread extends BaseClientThread {
 
     protected void receiveMessage(BaseMessage msg) {
         if (msg instanceof Screenshot) {
-            System.out.println("Setando ultimmo screenshot..");
+            System.out.println("Setando ultimo screenshot..");
             this.lastScreenshot = (Screenshot) msg;
         } else if (msg instanceof InfoMessage) {
             this.info = (InfoMessage) msg;
