@@ -14,7 +14,7 @@ import java.io.*;
 
 public class Config {
     
-    private final String pathToSave = "/var/lib/LabSpy/config.obj";
+    private final String pathToSave = "config.obj";
     private static Config singleton = null;
     private List<Computer> computers;
 
@@ -88,6 +88,8 @@ public class Config {
            } finally {
                output.close();
            }
+            output.flush();
+            buffer.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

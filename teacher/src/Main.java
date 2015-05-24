@@ -1,20 +1,14 @@
-import communication.ServerThread;
+import communication.ConnectorThread;
+import config.Computer;
+import config.Config;
 import views.GridManager;
+import views.LabSpy;
+
 /**
  * Created by fernando on 11/04/15.
  */
 public class Main {
     public static void main(String[] args) {
-		ServerThread serverThread = new ServerThread();
-		Thread server = new Thread(serverThread);
-		server.start();
-		GridManager g = new GridManager(serverThread);
-		g.setVisible(true);
-		while(true) {
-			g.update();
-			try {
-				Thread.sleep(1000);
-			} catch (Exception e) {}
-		}
+		LabSpy labSpy = new LabSpy();
 	}
 }

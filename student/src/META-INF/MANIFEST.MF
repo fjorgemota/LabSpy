@@ -1,4 +1,3 @@
 Manifest-Version: 1.0
 Class-Path: org.json.simple-0.4.jar json-simple-1.1.jar
 Main-Class: Main
-

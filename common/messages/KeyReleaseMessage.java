@@ -1,14 +1,12 @@
 package messages;
 
-import java.util.ArrayList;
-
 /**
  * Created by fernando on 11/04/15.
  */
-public class KeyPressMessage implements RobotMessage {
+public class KeyReleaseMessage implements RobotMessage {
     private int keyCode;
 
-    public KeyPressMessage(int keyCode) {
+    public KeyReleaseMessage(int keyCode) {
         this.keyCode = keyCode;
     }
 

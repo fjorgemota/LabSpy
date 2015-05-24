@@ -1,51 +1,99 @@
 package views;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import communication.BaseClientThread;
+import java.util.Collection;
+
 import communication.ClientThread;
-import communication.ServerThread;
-import messages.StartScreenshot;
+import communication.ConnectorThread;
 
 /*!
  * Gerenciador em uma janela que permite que o servidor
  * veja as varias capturas de imagens dos computadores dos 
  * clientes 
  */
-public class GridManager extends JFrame {
-    ServerThread _st;
+public class GridManager extends JFrame implements Runnable, ActionListener {
+    ConnectorThread _st;
     GroupLayout layout;
-    GroupLayout.ParallelGroup _verticalGroup;
-    GroupLayout.SequentialGroup _horizontalGroup;
+    JPanel jp;
+    JScrollPane js;
+    boolean stopped;
 
-   public GridManager(ServerThread st) {
-        super("Manager");
+   public GridManager(ConnectorThread st) {
+        super("LabSpy - Overview");
         _st = st;
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jp = new JPanel();
+        js = new JScrollPane(jp);
+       this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        layout = new GroupLayout(jp);
+        jp.setLayout(layout);
+        stopped = false;
+        this.setContentPane(js);
         this.setSize(400, 400);
         this.update();
 
     }
 
-//    public void update() { //recriar o grid
+
+    public void stop() {
+        this.stopped = true;
+    }
+
+    @Override
+    public void run() {
+        this.stopped = false;
+        while (!this.stopped) {
+            if (this.isActive()) {
+                this.update();
+            }
+            try {
+                Thread.sleep(1000/20);
+            } catch (InterruptedException e) {
+                continue;
+            }
+        }
+        this._st.stop();
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        this.stopped = true;
+    }
+
+    //    public void update() { //recriar o grid
 //        GroupLayout layout = this.getLayout();
 //        this.setHorizontalGroup(layout.createSequentialGroup());
 //        this.setVerticalGroup(layout.createParallelGroup());
 //        this.repaint();
 //    }
 
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Collection<ClientThread> clients = _st.getClients();
+        for (ClientThread client: clients) {
+            if (client.getComputer().getIp().equals(e.getActionCommand())) {
+                BigScreen big = new BigScreen(client);
+                Thread thread = new Thread(big);
+                thread.start();
+                break;
+            }
+        }
+
+    }
+
     public void update() {
-        JPanel jp = new JPanel();
-        JScrollPane js = new JScrollPane(jp);
-        layout = new GroupLayout(jp);
-        jp.setLayout(layout);
-        this.setContentPane(js);
-        ArrayList<ClientThread> clients = _st.getClients();
+        Collection<ClientThread> clients = _st.getClients();
         GroupLayout.ParallelGroup hg = layout.createParallelGroup();
         GroupLayout.SequentialGroup vg = layout.createSequentialGroup();
-
-        _horizontalGroup = layout.createSequentialGroup();
-        _verticalGroup = layout.createParallelGroup();
+        GroupLayout.ParallelGroup _verticalGroup = layout.createParallelGroup();
+        GroupLayout.SequentialGroup _horizontalGroup = layout.createSequentialGroup();
         int count = 0;
         for (ClientThread cl : clients) {
             if (count % 4 == 0) {
@@ -63,16 +111,26 @@ public class GridManager extends JFrame {
             //    return;
             //}
             //image = resize(image, 400, 400);
+
             if (cl.getLastScreenshot() == null) {
                 continue;
             }
-            JLabel lb = new JLabel(cl.getLastScreenshot().getImage());
+            System.out.println("Processando cliente " + count);
+            JButton lb = new JButton(new ImageIcon(cl.getLastScreenshot().getImage().getImage().getScaledInstance(
+                    400,
+                    300,
+                    Image.SCALE_FAST
+            )));
+            lb.setActionCommand(cl.getComputer().getIp());
+            lb.addActionListener(this);
             _horizontalGroup.addComponent(lb);
             _verticalGroup.addComponent(lb);
             count++;
         }
+        jp.removeAll();
         layout.setHorizontalGroup(hg);
         layout.setVerticalGroup(vg);
-        this.repaint();
+        jp.revalidate();
+        jp.repaint();
     }
 }
