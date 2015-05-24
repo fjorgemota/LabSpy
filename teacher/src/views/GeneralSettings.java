@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
- *
+ * TODO: Currently disabling "next" button when enable "same_password_checkbox". Not listening for username_field and password_field changes.
  * @author paladini
  */
 public class GeneralSettings extends javax.swing.JFrame {
@@ -207,7 +207,7 @@ public class GeneralSettings extends javax.swing.JFrame {
     }//GEN-LAST:event_computerList_listValueChanged
 
     private void backMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backMouseClicked
-        ComputerManager cm = new ComputerManager();
+        ComputerManager cm = new ComputerManager(config);
         cm.setVisible(true);
         dispose();
     }//GEN-LAST:event_backMouseClicked
