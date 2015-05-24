@@ -24,6 +24,7 @@ public class TextBox extends JPanel {
 			JScrollPane.HORIZONTAL_SCROLLBAR_NEVER
 		);
 		this.scroll.setBounds(120, 50, 300, 100);
+		this.textArea.setLineWrap(true);
 		this.add(scroll);
 		this.add(send);
 	}
