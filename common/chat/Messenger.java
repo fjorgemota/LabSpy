@@ -12,7 +12,7 @@ public class Messenger extends JFrame {
     private TextBox textBox;
     private JScrollPane scroll;
 
-    Messenger() {
+    public Messenger() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         JPanel panel = new JPanel();
         textBox = new TextBox();
