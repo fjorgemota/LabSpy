@@ -53,6 +53,8 @@ public class ClientThread extends BaseClientThread {
             this.screenshotThread = new ScreenshotThread(this, this.robotThread, ((StartScreenshot) msg).getRect());
             Thread screenshotThreadReal = new Thread(this.screenshotThread);
             screenshotThreadReal.start();
+        } else if (msg instanceof ResizeScreenshot) {
+            this.screenshotThread.setRect(((ResizeScreenshot) msg).getRect());
         } else if (msg instanceof StopScreenshot) {
             this.screenshotThread.stop();
         } else if (msg instanceof RobotMessage) {

@@ -116,13 +116,13 @@ public class LabSpy extends javax.swing.JFrame implements ActionListener {
     }
     @Override
     public void actionPerformed(ActionEvent actionEvent) {
-        connectorThread.stop();
         g.stop();
         String command = actionEvent.getActionCommand();
         if (command.equals(CONFIGURATION)) {
             ComputerManager manager = new ComputerManager(configuration);
             manager.setVisible(true);
         } else if (command.equals(SCREEN)) { //This may change with the next modifications for client-server
+            connectorThread.stop();
             Thread connector = new Thread(connectorThread);
             connector.start();
             g.setVisible(true);

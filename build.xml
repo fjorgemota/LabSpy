@@ -433,7 +433,7 @@
       <zipfileset file="${basedir}/lib/org.json.simple-0.4.jar"/>
       <zipfileset file="${basedir}/lib/json-simple-1.1.jar"/>
       <zipfileset dir="${student.output.dir}"/>
-      <zipfileset dir="${basedir}/student/src/META-INF" prefix="META-INF"/>
+      <zipfileset dir="${basedir}/student/META-INF" prefix="META-INF"/>
     </jar>
     <copy file="${temp.jar.path.Student.jar}" tofile="${artifact.temp.output.student}/Student.jar"/>
   </target>
@@ -443,8 +443,18 @@
     <mkdir dir="${artifact.temp.output.teacher}"/>
     <jar destfile="${temp.jar.path.Teacher.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
       <zipfileset dir="${teacher.output.dir}"/>
+      <zipfileset file="${basedir}/lib/sshj-0.12.0.jar"/>
+      <zipfileset file="${basedir}/lib/bcpkix-jdk15on-1.51.jar"/>
+      <zipfileset file="${basedir}/lib/bcprov-jdk15on-1.51.jar"/>
+      <zipfileset file="${basedir}/lib/jzlib-1.1.3.jar"/>
+      <zipfileset file="${basedir}/lib/slf4j-api-1.7.7.jar"/>
+      <zipfileset file="${basedir}/lib/log4j-to-slf4j-2.1.jar"/>
+      <zipfileset file="${basedir}/lib/slf4j-api-1.7.7.jar"/>
+      <zipfileset file="${basedir}/lib/log4j-api-2.1.jar"/>
+      <zipfileset file="${basedir}/lib/org.json.simple-0.4.jar"/>
+      <zipfileset file="${basedir}/lib/json-simple-1.1.jar"/>
       <zipfileset dir="${common.output.dir}"/>
-      <zipfileset dir="${basedir}/student/src/META-INF" prefix="META-INF"/>
+      <zipfileset dir="${basedir}/teacher/META-INF" prefix="META-INF"/>
       <zipfileset dir="${basedir}/teacher/imagens" prefix="imagens"/>
     </jar>
     <copy file="${temp.jar.path.Teacher.jar}" tofile="${artifact.temp.output.teacher}/Teacher.jar"/>

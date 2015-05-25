@@ -51,12 +51,6 @@ public abstract class BaseClientThread implements Runnable {
             int readSize = -1;
             while (!this.stopped) {
                 int num = selector.select();
-                if (num == 0) {
-                    continue;
-                }
-                if (this.sock.socket().isClosed()) {
-                    this.stop();
-                }
                 Set<SelectionKey> keys = selector.selectedKeys();
                 for (SelectionKey key: keys) {
                     if (key.isReadable()) {

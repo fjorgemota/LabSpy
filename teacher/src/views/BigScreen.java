@@ -133,14 +133,12 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
 
         this.setSize(width, height);
         this.setIgnoreRepaint(false);
-        client.sendMessage(new StopScreenshot());
-        client.sendMessage(new StartScreenshot(new Rectangle(this.getWidth(), this.getHeight())));
+        client.sendMessage(new ResizeScreenshot(new Rectangle(this.getWidth(), this.getHeight())));
         while (!this.stopped) {
             t = (t++) % 40;
             if (t == 0 && (this.getWidth() != width || this.getHeight() != height)) {
                 System.out.println("Enviando mensagem de redimensionamento");
-                client.sendMessage(new StopScreenshot());
-                client.sendMessage(new StartScreenshot(new Rectangle(this.getWidth(), this.getHeight())));
+                client.sendMessage(new ResizeScreenshot(new Rectangle(this.getWidth(), this.getHeight())));
                 width = this.getWidth();
                 height = this.getHeight();
             }

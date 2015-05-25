@@ -30,6 +30,10 @@ public class ScreenshotThread implements Runnable {
         this.run = false;
     }
 
+    public synchronized void setRect(Rectangle rect) {
+        this.rect = rect;
+    }
+
     @Override
     public void run() {
         this.run = true;
