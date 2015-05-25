@@ -19,6 +19,7 @@ public class Main {
         try {
             RobotThread robot= new RobotThread();
             Thread robotThread = new Thread(robot);
+            robotThread.setName("RobotThread");
             robotThread.start();
             ServerSocketChannel server = ServerSocketChannel.open();
             server.configureBlocking(false);
@@ -38,6 +39,7 @@ public class Main {
                     System.out.println("Connection accepted");
                     ClientThread cl = new ClientThread(s, robot);
                     Thread client = new Thread(cl);
+                    client.setName("ClientThread");
                     client.start();
                     try {
                         client.join();
