@@ -32,6 +32,7 @@ public class ClientThread extends BaseClientThread {
 
     @Override
     public synchronized void sendMessage(BaseMessage message) {
+        System.out.println(Thread.currentThread().toString());
         if (message instanceof Screenshot) {
             long now = System.currentTimeMillis();
             System.out.println(now+" > "+this.lastScreenshot);
@@ -52,8 +53,10 @@ public class ClientThread extends BaseClientThread {
             this.screenshotThread.stop();
             this.screenshotThread = new ScreenshotThread(this, this.robotThread, ((StartScreenshot) msg).getRect());
             Thread screenshotThreadReal = new Thread(this.screenshotThread);
+            screenshotThreadReal.setName("screenshotThread");
             screenshotThreadReal.start();
         } else if (msg instanceof ResizeScreenshot) {
+            System.out.println("Redimensionando screenshot thread");
             this.screenshotThread.setRect(((ResizeScreenshot) msg).getRect());
         } else if (msg instanceof StopScreenshot) {
             this.screenshotThread.stop();
