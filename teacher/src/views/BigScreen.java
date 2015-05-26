@@ -16,7 +16,7 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
     private MouseMoveMessage position;
 
     public BigScreen(ClientThread client) {
-        super("LabSpy - BigScreen");
+        super("LabSpy - BigScreen - "+client.getComputer().getIp());
         this.client = client;
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
@@ -33,7 +33,6 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
 
     @Override
     public void mousePressed(MouseEvent e) {
-        System.out.println("Enviando mensagem de mouse com botao pressionado");
         int button;
         switch(e.getButton()) {
             default:
@@ -52,7 +51,6 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        System.out.println("Enviando mensagem de mouse com botao solto");
         int button;
         switch(e.getButton()) {
             default:
@@ -82,7 +80,6 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        System.out.println("Enviando mensagem de mouse rolando");
         this.client.sendMessage(new MouseWheelMessage(e.getWheelRotation()));
 
     }
@@ -133,7 +130,6 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
         while (!this.stopped) {
             t = (t++) % 40;
             if (t == 0 && (this.getWidth() != width || this.getHeight() != height)) {
-                System.out.println("Enviando mensagem de redimensionamento");
                 client.sendMessage(new ResizeScreenshot(new Rectangle(this.getWidth(), this.getHeight())));
                 width = this.getWidth();
                 height = this.getHeight();
@@ -144,7 +140,6 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
             }
             if (this.isActive()) {
                 if (t == 0 && (this.position.getX() != x || this.position.getY() != y)) {
-                    System.out.println("Enviando mensagem de posicao do mouse");
                     this.client.sendMessage(this.position);
                     x = this.position.getX();
                     y = this.position.getY();

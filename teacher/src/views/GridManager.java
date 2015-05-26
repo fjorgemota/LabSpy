@@ -69,14 +69,6 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
         this.stopped = true;
     }
 
-    //    public void update() { //recriar o grid
-//        GroupLayout layout = this.getLayout();
-//        this.setHorizontalGroup(layout.createSequentialGroup());
-//        this.setVerticalGroup(layout.createParallelGroup());
-//        this.repaint();
-//    }
-
-
     @Override
     public void actionPerformed(ActionEvent e) {
         Collection<ClientThread> clients = _st.getClients();
@@ -107,14 +99,6 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
                 vg.addGroup(_verticalGroup);
 
             }
-            //BufferedImage image;
-            //try {
-            //    image = cl.getLastScreenshot().getImage();
-            //} catch (IOException e) {
-            //    JOptionPane.showMessageDialog(null, "Erro ao carregar imagem: e/home/podesta/Potaria/IyrK98Tb3_med.jpg");
-            //    return;
-            //}
-            //image = resize(image, 400, 400);
 
             if (cl.getLastScreenshot() == null || !cl.isRunning()) {
                 continue;
@@ -137,6 +121,7 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
                 )));
                 lb.setActionCommand(ip);
                 lb.addActionListener(this);
+                lb.setToolTipText(ip);
                 this.buttons.put(ip, lb);
             }
             _horizontalGroup.addComponent(lb);

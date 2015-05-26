@@ -17,8 +17,7 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
+import java.util.zip.*;
 
 /*!
  * Classe que implementa o sistema de comunicação básico entre cliente/servidor.
@@ -44,12 +43,12 @@ public abstract class BaseClientThread implements Runnable {
 
     public void stop() {
         this.stopped = true;
-        System.out.println("Parando BaseClientThread");
     }
 
     public boolean isRunning() {
         return !this.stopped && !this.sock.socket().isClosed();
     }
+
     @Override
     public void run() {
         try {
@@ -80,29 +79,27 @@ public abstract class BaseClientThread implements Runnable {
                                 readBuf = ByteBuffer.allocate(readSize);
                             } else {
                                 ByteArrayInputStream bias = new ByteArrayInputStream(readBuf.array());
-                                GZIPInputStream gzip = new GZIPInputStream(bias, 512000);
-                                ObjectInputStream interpreter = new ObjectInputStream(gzip);
+                                Inflater inflater = new Inflater();
+                                InflaterInputStream descompressor = new InflaterInputStream(bias, inflater, 102400);
+                                ObjectInputStream interpreter = new ObjectInputStream(descompressor);
                                 BaseMessage message = (BaseMessage) interpreter.readUnshared();
-                                System.out.println("Lendo mensagem " + message);
                                 this.receiveMessage(message);
                                 readBuf = null;
                                 readSize = -1;
+                                descompressor.close();
+                                inflater.end();
                             }
                         }
                     }
                     if (key.isWritable()) {
                         if (writeBuf == null) {
-                            System.out.println("Removendo mensagem da lista de mensagens enviadas");
                             writeBuf = this.send.poll();
                         }
                         if (writeBuf == null) {
                             continue;
                         }
-                        System.out.println("Writing..");
                         this.sock.write(writeBuf);
-                        System.out.println("Writed!");
                         if (!writeBuf.hasRemaining()) {
-                            System.out.println("Se preparando para escrever proxima mensagem...");
                             writeBuf = null;
                         }
                     }
@@ -110,13 +107,11 @@ public abstract class BaseClientThread implements Runnable {
                 keys.clear();
                 if (this.send.isEmpty() && writeBuf == null) {
                     if (toWrite) {
-                        System.out.println("Interested in read");
                         this.key.interestOps(SelectionKey.OP_READ);
                         toWrite = false;
                     }
                 } else {
                     if (!toWrite) {
-                        System.out.println("Interested in read and write");
                         this.key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
                         toWrite = true;
                     }
@@ -130,23 +125,25 @@ public abstract class BaseClientThread implements Runnable {
             e2.printStackTrace();
         }
         this.stop();
-        System.out.println("Fechando o BaseClientThread :v");
     }
 
     protected abstract void receiveMessage(BaseMessage msg);
 
     public synchronized void sendMessage(BaseMessage message) {
         try {
-            System.out.println("Tamanho da queue de escrita do BaseClientThread: " + this.send.size());
-            System.out.println("Escrevendo mensagem " + message);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            GZIPOutputStream gzip = new GZIPOutputStream(baos, 512000);
-            ObjectOutputStream os = new ObjectOutputStream(gzip);
+            Deflater deflater = new Deflater();
+            deflater.setLevel(5);
+            deflater.setStrategy(Deflater.FILTERED);
+            DeflaterOutputStream compressor = new DeflaterOutputStream(baos, deflater, 102400);
+            ObjectOutputStream os = new ObjectOutputStream(compressor);
             os.writeUnshared(message);
             os.flush();
             os.close();
-            gzip.flush();
-            gzip.close();
+            compressor.flush();
+            compressor.close();
+            deflater.end();
+
 
             ByteArrayOutputStream baosSize = new ByteArrayOutputStream();
             ObjectOutputStream osSize = new ObjectOutputStream(baosSize);
