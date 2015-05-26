@@ -89,20 +89,16 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
 
     @Override
     public void keyTyped(KeyEvent e) {
-
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("Enviando mensagem de tecla pressionada");
         this.client.sendMessage(new KeyPressMessage(e.getKeyCode()));
 
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-
-        System.out.println("Enviando mensagem de tecla solta");
         this.client.sendMessage(new KeyReleaseMessage(e.getKeyCode()));
     }
 
@@ -156,7 +152,7 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
                 this.repaint();
             }
             try {
-                Thread.sleep(1000/20);
+                Thread.sleep(1000/30);
             } catch (InterruptedException e) {
                 continue;
             }

@@ -67,11 +67,11 @@ public class ScreenshotThread implements Runnable {
                 if (this.run) {
                     this.client.sendMessage(screenshot);
                 }
-                try {
-                    Thread.sleep(1000/20);
-                } catch (InterruptedException e){
-                    continue;
-                }
+            }
+            try {
+                Thread.sleep(1000/30);
+            } catch (InterruptedException e){
+                continue;
             }
         }
         System.out.println("Stopping screenshot thread");

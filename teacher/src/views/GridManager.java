@@ -55,7 +55,7 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
                 this.update();
             }
             try {
-                Thread.sleep(1000/20);
+                Thread.sleep(1000/30);
             } catch (InterruptedException e) {
                 continue;
             }

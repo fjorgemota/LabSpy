@@ -30,20 +30,6 @@ public class ClientThread extends BaseClientThread {
         this.screenshotThread.stop();
     }
 
-    @Override
-    public synchronized void sendMessage(BaseMessage message) {
-        System.out.println(Thread.currentThread().toString());
-        if (message instanceof Screenshot) {
-            long now = System.currentTimeMillis();
-            System.out.println(now+" > "+this.lastScreenshot);
-            if (now > this.lastScreenshot) {
-                super.sendMessage(message);
-                this.lastScreenshot = now+(1000);
-            }
-        } else {
-            super.sendMessage(message);
-        }
-    }
 
     @Override
     protected void receiveMessage(BaseMessage msg) {

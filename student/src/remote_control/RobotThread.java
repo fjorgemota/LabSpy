@@ -54,17 +54,13 @@ public class RobotThread implements Runnable {
 
                 try {
                     if (msg instanceof KeyPressMessage) {
-                        System.out.println("Pressionando tecla do teclado");
                         r.keyPress(((KeyPressMessage) msg).getKeyCode());
                     } else if (msg instanceof KeyReleaseMessage) {
-                        System.out.println("Soltando tecla do teclado");
-                        r.keyPress(((KeyReleaseMessage) msg).getKeyCode());
+                        r.keyRelease(((KeyReleaseMessage) msg).getKeyCode());
                     } else if (msg instanceof MousePressMessage) {
-                        System.out.println("Pressionando botao do mouse");
                         MousePressMessage press = (MousePressMessage) msg;
                         r.mousePress(press.getButton());
                     } else if (msg instanceof MouseReleaseMessage) {
-                        System.out.println("Soltando botao do mouse");
                         MouseReleaseMessage release = (MouseReleaseMessage) msg;
                         r.mouseRelease(release.getButton());
                     } else if (msg instanceof MouseWheelMessage) {
