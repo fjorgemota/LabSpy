@@ -80,7 +80,7 @@ public abstract class BaseClientThread implements Runnable {
                                 readBuf = ByteBuffer.allocate(readSize);
                             } else {
                                 ByteArrayInputStream bias = new ByteArrayInputStream(readBuf.array());
-                                GZIPInputStream gzip = new GZIPInputStream(bias, 10240);
+                                GZIPInputStream gzip = new GZIPInputStream(bias, 512000);
                                 ObjectInputStream interpreter = new ObjectInputStream(gzip);
                                 BaseMessage message = (BaseMessage) interpreter.readUnshared();
                                 System.out.println("Lendo mensagem " + message);
@@ -140,7 +140,7 @@ public abstract class BaseClientThread implements Runnable {
             System.out.println("Tamanho da queue de escrita do BaseClientThread: " + this.send.size());
             System.out.println("Escrevendo mensagem " + message);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            GZIPOutputStream gzip = new GZIPOutputStream(baos, 10240);
+            GZIPOutputStream gzip = new GZIPOutputStream(baos, 512000);
             ObjectOutputStream os = new ObjectOutputStream(gzip);
             os.writeUnshared(message);
             os.flush();
