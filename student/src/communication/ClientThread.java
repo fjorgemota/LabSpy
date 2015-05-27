@@ -16,12 +16,10 @@ import java.nio.channels.SocketChannel;
 public class ClientThread extends BaseClientThread {
     private ScreenshotThread screenshotThread;
     private RobotThread robotThread;
-    private long lastScreenshot;
 
     public ClientThread(SocketChannel sock, RobotThread robot) {
         super(sock);
         this.robotThread = robot;
-        this.lastScreenshot = System.currentTimeMillis()+1000;
         this.screenshotThread = new ScreenshotThread(this, this.robotThread, new Rectangle(400, 300));
     }
 
@@ -33,16 +31,13 @@ public class ClientThread extends BaseClientThread {
 
     @Override
     protected void receiveMessage(BaseMessage msg) {
-        System.out.println("Recebida mensagem");
         if (msg instanceof StartScreenshot) {
-            System.out.println("Starting screenshot thread");
             this.screenshotThread.stop();
             this.screenshotThread = new ScreenshotThread(this, this.robotThread, ((StartScreenshot) msg).getRect());
             Thread screenshotThreadReal = new Thread(this.screenshotThread);
             screenshotThreadReal.setName("screenshotThread");
             screenshotThreadReal.start();
         } else if (msg instanceof ResizeScreenshot) {
-            System.out.println("Redimensionando screenshot thread");
             this.screenshotThread.setRect(((ResizeScreenshot) msg).getRect());
         } else if (msg instanceof StopScreenshot) {
             this.screenshotThread.stop();

@@ -33,10 +33,8 @@ public class Main {
                 while (keys.hasNext()) {
                     SelectionKey key = keys.next();
                     keys.remove();
-                    System.out.println("Awaiting connection..");
                     SocketChannel s = server.accept();
                     s.configureBlocking(false);
-                    System.out.println("Connection accepted");
                     ClientThread cl = new ClientThread(s, robot);
                     Thread client = new Thread(cl);
                     client.setName("ClientThread");

@@ -5,8 +5,10 @@ import messages.Screenshot;
 import messages.ScreenshotRequest;
 import org.w3c.dom.css.Rect;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.concurrent.locks.Lock;
 
 /*!
@@ -38,6 +40,12 @@ public class ScreenshotThread implements Runnable {
     public void run() {
         this.run = true;
         Rectangle screen = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+        if (classLoader == null) {
+            classLoader = Class.class.getClassLoader();
+        }
+        BufferedImage cursor = null;
         while(this.run) {
             synchronized (this) {
                 robot.sendMessage(new ScreenshotRequest(screen));
@@ -53,9 +61,20 @@ public class ScreenshotThread implements Runnable {
                 Graphics2D bGr = bImage.createGraphics();
                 bGr.drawImage(image, 0, 0, null);
                 Point location = MouseInfo.getPointerInfo().getLocation();
-                bGr.setColor(Color.BLUE);
                 bGr.translate(0, 0);
-                bGr.fillOval((int) location.getX(), (int) location.getY(), 20, 20);
+                try {
+                    if (cursor == null) {
+                        cursor = ImageIO.read(classLoader.getResourceAsStream("imagens/cursor.png"));
+                    }
+                    if (cursor != null) {
+                        bGr.drawImage(cursor, (int) location.getX(), (int) location.getY(), 18, 30, null);
+                    } else {
+                        bGr.setColor(Color.BLUE);
+                        bGr.drawOval( (int) location.getX(), (int) location.getY(), 20, 20);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 bGr.dispose();
 
 
@@ -74,6 +93,5 @@ public class ScreenshotThread implements Runnable {
                 continue;
             }
         }
-        System.out.println("Stopping screenshot thread");
     }
 }

@@ -28,17 +28,15 @@ public class RobotThread implements Runnable {
     public void run() {
         try {
             Robot r = new Robot();
-            System.out.println("Executing robot thread..");
             Rectangle screen = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
             while (true) {
-                System.out.println("Tamanho da queue do RobotThread: "+this.send.size());
                 RobotMessage msg = null;
-                while (msg == null) {
-                    try {
-                        msg = this.send.poll(1000/20, TimeUnit.MILLISECONDS);
-                    } catch (InterruptedException e) {
-                        continue;
-                    }
+                try {
+                    msg = this.send.take();
+                } catch (InterruptedException e) {
+                    continue;
+                }
+                synchronized (this) {
                     if (this.position != null) {
                         int x = (int) ((
                                 screen.getWidth() / ((double) this.position.getWidth())
@@ -47,7 +45,6 @@ public class RobotThread implements Runnable {
                                 screen.getHeight() / ((double) this.position.getHeight()))
                                 * this.position.getY());
                         r.mouseMove(x, y);
-                        r.waitForIdle();
                         this.position = null;
                     }
                 }
@@ -84,11 +81,12 @@ public class RobotThread implements Runnable {
     public synchronized void sendMessage(RobotMessage msg) {
         while (true) {
             try {
-                if (msg instanceof MouseMoveMessage) {
-                    this.position = (MouseMoveMessage) msg;
-                } else {
-                    this.send.put(msg);
+                synchronized (this) {
+                    if (msg instanceof MouseMoveMessage) {
+                        this.position = (MouseMoveMessage) msg;
+                    }
                 }
+                this.send.put(msg);
             } catch (InterruptedException e) {
                 continue;
             }
@@ -98,7 +96,6 @@ public class RobotThread implements Runnable {
 
     public Screenshot getLastScreenshot() {
         Screenshot result = null;
-        System.out.println("Tamanho da queue de screenshots: "+this.send.size());
         while (result == null) {
             try {
                 result = this.screenshots.take();
