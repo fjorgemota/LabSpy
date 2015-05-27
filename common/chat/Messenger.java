@@ -10,11 +10,11 @@ import java.awt.event.*;
  */
 public class Messenger extends JFrame {
     private TextBox textBox;
-    private JScrollPane scroll;
 
     public Messenger() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+        this.setSize(500, 400);
+
         JPanel panel = new JPanel();
         JTextArea textArea = new JTextArea(10, 10);
         textBox = new TextBox();
