@@ -100,7 +100,7 @@ public class LabSpy extends javax.swing.JFrame implements ActionListener {
 
         try {
 
-            this.setContentPane(new JLabel(new ImageIcon(ImageIO.read(classLoader.getResourceAsStream("imagens/SpyLabLogoLg.jpg")))));
+            this.setContentPane(new JLabel(new ImageIcon(ImageIO.read(classLoader.getResourceAsStream("imagens/labspy400x400.png")))));
         } catch (IOException e) {
             e.printStackTrace();
         }

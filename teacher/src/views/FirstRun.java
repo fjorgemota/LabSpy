@@ -33,7 +33,7 @@ public class FirstRun extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("LabSpy - First Access");
 
-        jLabel2.setIcon(new javax.swing.ImageIcon("/home/paladini/IdeaProjects/LabSpy/assets/labspy400x400.png")); // NOI18N
+        jLabel2.setIcon(new javax.swing.ImageIcon("imagens/labspy400x400.png")); // NOI18N
 
         jLabel1.setFont(new java.awt.Font("DejaVu Serif Condensed", 1, 16)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
