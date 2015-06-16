@@ -1,4 +1,4 @@
-package config;
+package teacher.src.config;
 
 import java.io.Serializable;
 
@@ -25,7 +25,7 @@ public class Computer implements Serializable {
     public String getLabel() { return this.label; }
     
     public String toString() {
-        return this.ip;
+        return this.label.trim().isEmpty() ? this.ip : this.label;
     }
 
 }

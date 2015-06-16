@@ -1,12 +1,10 @@
-package views;/*
+package teacher.src.views;/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
-import config.Computer;
-import config.Setup;
-
+import teacher.src.config.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -71,11 +69,11 @@ public class InstallViewer extends javax.swing.JFrame {
                     Setup setup = null;
 
                     if (globalUsername != null && globalPassword != null) {
-                        setup = new Setup(c, globalUsername, globalPassword);
+                        setup = new SetupLinux(c, globalUsername, globalPassword);
                     } else {
                         String username = JOptionPane.showInputDialog(null, "Username (root) for " + c.toString() + ":", "SSH Authentication", JOptionPane.QUESTION_MESSAGE);
                         String password = JOptionPane.showInputDialog(null, "Password of " + username + " user for " + c.toString() + ":", "SSH Authentication", JOptionPane.QUESTION_MESSAGE);
-                        setup = new Setup(c, username, password);
+                        setup = new SetupLinux(c, username, password);
                     }
 
                     // Before start installing this Setup object.

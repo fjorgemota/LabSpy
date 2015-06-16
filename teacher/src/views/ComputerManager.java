@@ -1,17 +1,18 @@
-package views;/*
+package teacher.src.views;/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
 
 
-import config.Computer;
-import config.Config;
+import teacher.src.config.*;
 
 import javax.swing.DefaultListModel;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 
 /**
  *
@@ -214,11 +215,30 @@ public class ComputerManager extends javax.swing.JFrame {
     }//GEN-LAST:event_removeComputer_buttonMouseClicked
 
     private void addComputer_buttonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_addComputer_buttonMouseClicked
-        String s = (String) JOptionPane.showInputDialog(null, "Insert the IP of the new machine.");
         
-        Computer c = new Computer(s);
-        config.addComputer(c);
-        updateList();
+        JTextField fieldLabel = new JTextField();
+        JTextField fieldIP = new JTextField();
+        Object[] message = {
+            "Computer Label:", fieldLabel,
+            "IP Address::", fieldIP
+        };
+        
+        boolean cancel = false;
+        int option = -1;
+        do {
+            option = JOptionPane.showConfirmDialog(null, message, "Add new computer", JOptionPane.OK_CANCEL_OPTION);
+            if (option != JOptionPane.OK_OPTION) {
+                cancel = true;
+                break;
+            }
+        } while(fieldIP.getText().isEmpty());
+        
+        if (!cancel) {
+            Computer c = new Computer(fieldIP.getText(), fieldLabel.getText());
+            config.addComputer(c);
+            updateList();
+        }
+        
     }//GEN-LAST:event_addComputer_buttonMouseClicked
 
     private void nextMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nextMouseClicked

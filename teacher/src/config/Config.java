@@ -1,4 +1,4 @@
-package config;
+package teacher.src.config;
 /**
  * Esta classe é responsável por armazenar as configurações do LabSpy em um arquivo de objetos serializados.
  */

@@ -1,21 +1,16 @@
-package config;
+package teacher.src.config;
 
-import communication.RemoteSSH;
+import teacher.src.communication.RemoteSSH;
 
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Esta classe é responsável por realizar o setup / instalação do Cliente LabSpy (máquinas dos alunos) em uma máquina.
  * Utiliza classes como Computer e RemoteSSH para tal.
  *
  */
-public class Setup {
+public abstract class Setup {
 
-    private RemoteSSH ssh;
-    private final String pathToInstall = "/var/lib/LabSpy/";
-    private final String clientSRC = "out/artifacts/Student/Student.jar";
-    private final String scriptSRC = "assets/labspy.sh";
+    RemoteSSH ssh;
 
     public Setup(RemoteSSH ssh) {
         this.ssh = ssh;
@@ -28,29 +23,26 @@ public class Setup {
     public void install() {
 
         // Creating folder in the remote machine.
-        try {
-            ssh.executeCommand("sudo mkdir -p " + pathToInstall);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // You should create the folder where you'll install the student client.
+        createDirectory();
 
         // Transfering the Client for the remote machine.
-        try {
-            ssh.transferFile(clientSRC, pathToInstall);
-            ssh.transferFile(scriptSRC, pathToInstall);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // You should transfer "Student.jar" (commonly on "out/artifacts/Student/Student.jar")
+        // from your computer to the remote student computer. Any other needed files must be sent as well.
+        transferFiles();
 
         // Enabling the client to run at the startup.
-        try {
-            ssh.executeCommand("sudo ln -s /var/lib/LabSpy/labspy.sh /etc/init.d/labspy_client");
-            ssh.executeCommand("sudo chmod +x /etc/init.d/labspy_client");
-            ssh.executeCommand("sudo update-rc.d labspy_client defaults");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // You should configure the remote OS to run student client at startup.
+        installToRunAtStartup();
 
     }
-
+    
+    abstract void createDirectory();
+    abstract void transferFiles();
+    abstract void installToRunAtStartup();
+    
+    // Forces developer to create the variables "pathToInstall" and clientSRC
+    abstract String getPathToInstall();
+    abstract String getClientSRC();
+    
 }
