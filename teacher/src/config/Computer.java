@@ -1,4 +1,4 @@
-package teacher.src.config;
+package config;
 
 import java.io.Serializable;
 

@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package teacher.src.config;
+package config;
 
 import java.io.IOException;
-import teacher.src.communication.RemoteSSH;
+import communication.RemoteSSH;
 
 /**
  * This class is responsible for setting-up a student client on a remote machine. 

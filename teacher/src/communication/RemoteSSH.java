@@ -7,15 +7,16 @@ import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.transport.TransportException;
 import net.schmizz.sshj.transport.verification.HostKeyVerifier;
+import net.schmizz.sshj.xfer.FileSystemFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.security.PublicKey;
 import java.util.concurrent.TimeUnit;
-import net.schmizz.sshj.xfer.FileSystemFile;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Classe responsável por conectar o computador do professor ao computador do estudante via SSH. Permite execução de comandos,

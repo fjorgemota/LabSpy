@@ -1,6 +1,6 @@
-package teacher.src.config;
+package config;
 
-import teacher.src.communication.RemoteSSH;
+import communication.RemoteSSH;
 
 
 /**
