@@ -51,7 +51,7 @@ public class SetupLinux extends Setup {
         try {
             ssh.executeCommand("sudo ln -s /var/lib/LabSpy/labspy.sh /etc/init.d/labspy_client");
             ssh.executeCommand("sudo chmod +x /etc/init.d/labspy_client");
-            ssh.executeCommand("sudo update-rc.d labspy_client defaults");
+            ssh.executeCommand("sudo update-rc.d labspy_client defaults 99 01");
         } catch (IOException e) {
             e.printStackTrace();
         }
