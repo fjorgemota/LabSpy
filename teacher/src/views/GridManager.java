@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import communication.ClientThread;
 import communication.ConnectorThread;
+import messages.RestartMessage;
 
 /*!
  * Gerenciador em uma janela que permite que o servidor

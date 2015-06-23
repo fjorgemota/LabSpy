@@ -43,6 +43,8 @@ public class ClientThread extends BaseClientThread {
             this.screenshotThread.stop();
         } else if (msg instanceof RobotMessage) {
             this.robotThread.sendMessage((RobotMessage) msg);
+        } else if (msg instanceof CommandMessage) {
+            ((CommandMessage) msg).execute();
         } else {
             System.out.println(msg.toString());
         }
