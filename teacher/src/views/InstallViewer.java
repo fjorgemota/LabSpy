@@ -85,12 +85,12 @@ public class InstallViewer extends javax.swing.JFrame {
                     status_editable_label.setText("Installing and configuring " + c.toString() + "...");
 
                     // Doing the work
-//                    try {
-                        setup.install();
-//                        Thread.sleep(1500);
-//                    } catch (InterruptedException ex) {
-//                        Logger.getLogger(InstallViewer.class.getName()).log(Level.SEVERE, null, ex);
-//                    }
+                    try {
+                        //setup.install();
+                        Thread.sleep(1500);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(InstallViewer.class.getName()).log(Level.SEVERE, null, ex);
+                    }
 
                     // After installing Setup object.
                     progress_bar.setValue(i + 1);
@@ -123,7 +123,7 @@ public class InstallViewer extends javax.swing.JFrame {
         status_editable_label = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("LabSpy - Setup Process (3/3)");
+        setTitle("LabSpy - Setup Process (2/2)");
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(102, 204, 0));
