@@ -18,35 +18,6 @@ import java.util.Iterator;
 public class Main {
     public static void main(String[] argv) {
 
-//        GraphicsEnvironment ge;
-//        do {
-//            ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//        } while (ge.isHeadless());
-//
-//        while (GraphicsEnvironment.isHeadless()) {
-//            try {
-//                Thread.sleep(5000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        boolean teste = false;
-//        while(!teste) {
-//            try {
-//                Desktop.getDesktop();
-//                teste = true;
-//            } catch (HeadlessException e) {
-//                System.out.println("Environment headless!");
-//                try {
-//                    Thread.sleep(5000);
-//                } catch (InterruptedException exception) {
-//                    exception.printStackTrace();
-//                }
-//            }
-//        }
-//        System.out.println("Now environment is headful!");
-
         try {
             RobotThread robot= new RobotThread();
             Thread robotThread = new Thread(robot);
