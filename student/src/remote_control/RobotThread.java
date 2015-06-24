@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /*!
- * Robo que e responsavel pela sincronizaçao do mouse do 
+ * Robo que e responsavel pela sincronizaçao do mouse do
  * computador servidor na tela do computador do cliente, quando
  * este estiver recebendo a imagem da tela do servidor
  */
@@ -26,56 +26,77 @@ public class RobotThread implements Runnable {
 
     @Override
     public void run() {
-        try {
-            Robot r = new Robot();
-            Rectangle screen = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-            while (true) {
-                RobotMessage msg = null;
-                try {
-                    msg = this.send.take();
-                } catch (InterruptedException e) {
-                    continue;
-                }
-                synchronized (this) {
-                    if (this.position != null) {
-                        int x = (int) ((
-                                screen.getWidth() / ((double) this.position.getWidth())
-                        ) * this.position.getX());
-                        int y = (int) ((
-                                screen.getHeight() / ((double) this.position.getHeight()))
-                                * this.position.getY());
-                        r.mouseMove(x, y);
-                        this.position = null;
-                    }
-                }
+        boolean ready = false;
 
-                try {
-                    if (msg instanceof KeyPressMessage) {
-                        r.keyPress(((KeyPressMessage) msg).getKeyCode());
-                    } else if (msg instanceof KeyReleaseMessage) {
-                        r.keyRelease(((KeyReleaseMessage) msg).getKeyCode());
-                    } else if (msg instanceof MousePressMessage) {
-                        MousePressMessage press = (MousePressMessage) msg;
-                        r.mousePress(press.getButton());
-                    } else if (msg instanceof MouseReleaseMessage) {
-                        MouseReleaseMessage release = (MouseReleaseMessage) msg;
-                        r.mouseRelease(release.getButton());
-                    } else if (msg instanceof MouseWheelMessage) {
-                        MouseWheelMessage wheel = (MouseWheelMessage) msg;
-                        r.mouseWheel(wheel.getWheel());
-                    } else if (msg instanceof ScreenshotRequest) {
-                        ScreenshotRequest screenshotRequest = (ScreenshotRequest) msg;
-                        BufferedImage buf = r.createScreenCapture(screenshotRequest.getRect());
-                        screenshots.offer(new Screenshot(buf));
+        // Waiting for XServer start on the student machine.
+        while (!ready) {
+            try {
+                Robot r = new Robot();
+                ready = true;
+
+                Rectangle screen = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+                while (true) {
+                    RobotMessage msg = null;
+                    try {
+                        msg = this.send.take();
+                    } catch (InterruptedException e) {
+                        continue;
                     }
-                } catch(IllegalArgumentException e2) {
-                    e2.printStackTrace();
+                    synchronized (this) {
+                        if (this.position != null) {
+                            int x = (int) ((
+                                    screen.getWidth() / ((double) this.position.getWidth())
+                            ) * this.position.getX());
+                            int y = (int) ((
+                                    screen.getHeight() / ((double) this.position.getHeight()))
+                                    * this.position.getY());
+                            r.mouseMove(x, y);
+                            this.position = null;
+                        }
+                    }
+
+                    try {
+                        if (msg instanceof KeyPressMessage) {
+                            r.keyPress(((KeyPressMessage) msg).getKeyCode());
+                        } else if (msg instanceof KeyReleaseMessage) {
+                            r.keyRelease(((KeyReleaseMessage) msg).getKeyCode());
+                        } else if (msg instanceof MousePressMessage) {
+                            MousePressMessage press = (MousePressMessage) msg;
+                            r.mousePress(press.getButton());
+                        } else if (msg instanceof MouseReleaseMessage) {
+                            MouseReleaseMessage release = (MouseReleaseMessage) msg;
+                            r.mouseRelease(release.getButton());
+                        } else if (msg instanceof MouseWheelMessage) {
+                            MouseWheelMessage wheel = (MouseWheelMessage) msg;
+                            r.mouseWheel(wheel.getWheel());
+                        } else if (msg instanceof ScreenshotRequest) {
+                            ScreenshotRequest screenshotRequest = (ScreenshotRequest) msg;
+                            BufferedImage buf = r.createScreenCapture(screenshotRequest.getRect());
+                            screenshots.offer(new Screenshot(buf));
+                        }
+                    } catch(IllegalArgumentException e2) {
+                        e2.printStackTrace();
+                    }
+                    r.waitForIdle();
                 }
-                r.waitForIdle();
+            } catch (AWTException | AWTError | NoClassDefFoundError e ) {
+                e.printStackTrace();
+                System.out.println("XServer not ready yet. Will try later.");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
             }
-        } catch(AWTException e) {
-            e.printStackTrace();
         }
+//        Robot r = null;
+//        try {
+//            r = new Robot();
+//        } catch (AWTException e) {
+//            e.printStackTrace();
+//        }
+
+
     }
 
     public synchronized void sendMessage(RobotMessage msg) {

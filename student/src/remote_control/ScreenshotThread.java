@@ -38,10 +38,29 @@ public class ScreenshotThread implements Runnable {
 
     @Override
     public void run() {
-        this.run = true;
-        Rectangle screen = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+
+        Rectangle screen = null;
+        boolean ready = false;
+
+        // Waiting for XServer start on the student machine.
+        while (!ready) {
+            try {
+                screen = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+                ready = true;
+            } catch (NoClassDefFoundError e) {
+                e.printStackTrace();
+                System.out.println("XServer not ready yet. Will try later. (from ScreenshotThread.java)");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }
+
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
+        this.run = true;
         if (classLoader == null) {
             classLoader = Class.class.getClassLoader();
         }
