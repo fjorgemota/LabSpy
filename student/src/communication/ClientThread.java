@@ -5,7 +5,6 @@ import remote_control.RobotThread;
 import remote_control.ScreenshotThread;
 
 import java.awt.*;
-import java.net.Socket;
 import java.nio.channels.SocketChannel;
 
 /**
@@ -43,8 +42,8 @@ public class ClientThread extends BaseClientThread {
             this.screenshotThread.stop();
         } else if (msg instanceof RobotMessage) {
             this.robotThread.sendMessage((RobotMessage) msg);
-        } else if (msg instanceof CommandMessage) {
-            ((CommandMessage) msg).execute();
+        } else if (msg instanceof BaseCommandMessage) {
+            ((BaseCommandMessage) msg).execute();
         } else {
             System.out.println(msg.toString());
         }

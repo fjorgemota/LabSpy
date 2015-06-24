@@ -2,13 +2,13 @@
 SERVICE_NAME=labspy_client
 PATH_TO_JAR=/var/lib/LabSpy/Student.jar
 PID_PATH_NAME=/tmp/labspy_client_pid
-USER_FOLDER=youruser
+USER_AUTHORITY_PATH="$HOME/.Xauthority"
 case $1 in
     start)
         echo "Starting $SERVICE_NAME ..."
         if [ ! -f $PID_PATH_NAME ]; then
             export DISPLAY=:0
-            export XAUTHORITY="/home/$USER_FOLDER/.Xauthority"
+            export XAUTHORITY=$USER_AUTHORITY_PATH
             until xwininfo -root > /dev/null
             do
               sleep 5
@@ -40,7 +40,7 @@ case $1 in
             rm $PID_PATH_NAME
             echo "$SERVICE_NAME starting ..."
             export DISPLAY=:0
-            export XAUTHORITY="/home/$USER_FOLDER/.Xauthority"
+            export XAUTHORITY=$USER_AUTHORITY_PATH
             until xwininfo -root > /dev/null
             do
               sleep 5
