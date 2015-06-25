@@ -15,9 +15,11 @@ public class Config {
 
     private Config() {
         computers = new ArrayList<Computer>();
-        pathToSave = System.getProperty("user.home") + "/.labspy/config.obj";
+        checkEnvironment();
         checkAndParseFile();
     }
+
+
 
     public static Config getInstance() {
         if (singleton == null) {
@@ -104,6 +106,15 @@ public class Config {
             // e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void checkEnvironment() {
+        File f = new File("out/artifacts/Teacher/Teacher.jar");
+        if (!f.exists()) { // is in production environment
+            pathToSave = System.getProperty("user.home") + "/.labspy/config.obj";
+        } else { // is in test / development environment
+            pathToSave = "config.obj";
         }
     }
 

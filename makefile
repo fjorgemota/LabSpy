@@ -17,9 +17,14 @@ install_teacher: uninstall_teacher
 	# Installing in the labspy dir.
 	mkdir ~/.labspy
 	mkdir ~/.labspy/icons
-	cp $(CURRENT_FOLDER)/out/artifacts/Teacher/Teacher.jar ~/.labspy/
+	mkdir ~/.labspy/bin
+	# mkdir -p ~/.labspy/out/artifacts/Student # Don't change, it will broke LabSpy for remote installation if you don't use default installation (for developers it's very bad)
+	# mkdir ~/.labspy/assets  # Don't change, it will broke LabSpy for remote installation if you don't use default installation (for developers it's very bad)
 	cp $(CURRENT_FOLDER)/assets/*.png ~/.labspy/icons/
 	cp $(CURRENT_FOLDER)/README.md ~/.labspy/
+	cp $(CURRENT_FOLDER)/assets/labspy.sh ~/.labspy/bin/ # Don't change, it will broke LabSpy for remote installation if you don't use default installation (for developers it's very bad)
+	cp $(CURRENT_FOLDER)/out/artifacts/Teacher/Teacher.jar ~/.labspy/
+	cp $(CURRENT_FOLDER)/out/artifacts/Student/Student.jar ~/.labspy/bin/ # Don't change, it will broke LabSpy for remote installation if you don't use default installation (for developers it's very bad)
 	mv ~/.labspy/Teacher.jar ~/.labspy/labspy_teacher.jar
 
 	# Creating SH file

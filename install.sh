@@ -1,10 +1,5 @@
 #!/bin/bash
 
-# Only compile if flag "-nc" (-not-compile) isn't set. 
-if [[ $2 != "-nc" ]]; then
-    make compile
-fi
-
 if [[ $1 = "teacher" ]]; then
     make install_teacher
 elif [[ $1 = "student" ]]; then
