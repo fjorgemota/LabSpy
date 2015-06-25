@@ -17,7 +17,6 @@ import communication.RemoteSSH;
 public class SetupLinux extends Setup {
     
     private final String pathToInstall = "/var/lib/LabSpy/";
-
     private String clientSRC;
     private String scriptSRC;
 
