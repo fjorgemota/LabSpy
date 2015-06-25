@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 /*!
- * Robo que e responsavel pela sincronizaçao do mouse do 
+ * Robo que e responsavel pela sincronizaçao do mouse do
  * computador servidor na tela do computador do cliente, quando
  * este estiver recebendo a imagem da tela do servidor
  */
@@ -28,6 +28,7 @@ public class RobotThread implements Runnable {
     public void run() {
         try {
             Robot r = new Robot();
+
             Rectangle screen = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
             while (true) {
                 RobotMessage msg = null;
@@ -68,12 +69,12 @@ public class RobotThread implements Runnable {
                         BufferedImage buf = r.createScreenCapture(screenshotRequest.getRect());
                         screenshots.offer(new Screenshot(buf));
                     }
-                } catch(IllegalArgumentException e2) {
+                } catch (IllegalArgumentException e2) {
                     e2.printStackTrace();
                 }
                 r.waitForIdle();
             }
-        } catch(AWTException e) {
+        } catch (AWTException e) {
             e.printStackTrace();
         }
     }

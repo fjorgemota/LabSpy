@@ -4,15 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
 import communication.ClientThread;
 import communication.ConnectorThread;
-import messages.RestartMessage;
 
 /*!
  * Gerenciador em uma janela que permite que o servidor

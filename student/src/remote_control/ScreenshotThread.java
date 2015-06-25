@@ -39,6 +39,7 @@ public class ScreenshotThread implements Runnable {
     @Override
     public void run() {
         this.run = true;
+
         Rectangle screen = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
