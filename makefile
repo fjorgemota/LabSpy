@@ -2,7 +2,8 @@ CURRENT_FOLDER=$(shell pwd)
 CURRENT_HOME=$(shell echo $HOME)
 APPEND_TO_DESKTOP_ENTRY=sudo tee --append /usr/share/applications/labspy.desktop > /dev/null
 
-install_student: uninstall_teacher
+install_student: uninstall_student
+    sudo mkdir /var/lib/LabSpy/
 	sudo cp $(CURRENT_FOLDER)/out/artifacts/Student/Student.jar /var/lib/LabSpy/
 	sudo cp $(CURRENT_FOLDER)/assets/labspy.sh /var/lib/LabSpy/
 	sudo ln -s /var/lib/LabSpy/labspy.sh /etc/init.d/labspy_client

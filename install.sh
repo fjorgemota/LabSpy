@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Only compile if flag "-nc" (-not-compile) isn't set. 
 if [[ $2 != "-nc" ]]; then
