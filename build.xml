@@ -429,7 +429,6 @@
     <mkdir dir="${artifact.temp.output.student}"/>
     <jar destfile="${temp.jar.path.Student.jar}" duplicate="preserve" filesetmanifest="merge">
       <zipfileset dir="${common.output.dir}"/>
-      <zipfileset file="${basedir}/lib/sshj-0.12.0.jar"/>
       <zipfileset file="${basedir}/lib/bcpkix-jdk15on-1.51.jar"/>
       <zipfileset file="${basedir}/lib/bcprov-jdk15on-1.51.jar"/>
       <zipfileset file="${basedir}/lib/jzlib-1.1.3.jar"/>
@@ -452,8 +451,14 @@
     <jar destfile="${temp.jar.path.Teacher.jar}" duplicate="preserve" filesetmanifest="merge">
       <zipfileset dir="${teacher.output.dir}"/>
       <zipfileset dir="${common.output.dir}"/>
-      <zipfileset dir="${basedir}/student/META-INF" prefix="META-INF"/>
+      <zipfileset dir="${basedir}/teacher/META-INF" prefix="META-INF"/>
       <zipfileset dir="${basedir}/teacher/imagens" prefix="imagens"/>
+      <zipfileset src="${basedir}/lib/sshj-0.12.0.jar" excludes="META-INF/*" />
+      <zipfileset src="${basedir}/lib/slf4j-api-1.7.7.jar" excludes="META-INF/*" />
+
+      <zipfileset src="${basedir}/lib/bcpkix-jdk15on-1.51.jar"  excludes="META-INF/*"/>
+      <zipfileset src="${basedir}/lib/bcprov-jdk15on-1.51.jar"  excludes="META-INF/*"/>
+      <zipfileset src="${basedir}/lib/jzlib-1.1.3.jar" excludes="META-INF/*" />
     </jar>
     <copy file="${temp.jar.path.Teacher.jar}" tofile="${artifact.temp.output.teacher}/Teacher.jar"/>
   </target>
