@@ -9,12 +9,13 @@ import java.io.*;
 
 public class Config {
     
-    private final String pathToSave = "config.obj";
+    private String pathToSave;
     private static Config singleton = null;
     private List<Computer> computers;
 
     private Config() {
         computers = new ArrayList<Computer>();
+        pathToSave = System.getProperty("user.home") + "/.labspy/config.obj";
         checkAndParseFile();
     }
 

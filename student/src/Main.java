@@ -19,7 +19,7 @@ public class Main {
     public static void main(String[] argv) {
 
         try {
-            RobotThread robot= new RobotThread();
+            RobotThread robot = new RobotThread();
             Thread robotThread = new Thread(robot);
             robotThread.setName("RobotThread");
             robotThread.start();
