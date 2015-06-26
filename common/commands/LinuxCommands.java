@@ -1,6 +1,6 @@
 package commands;
 
-public class UnixCommands extends OSCommands {
+public class LinuxCommands extends OSCommands {
 
 	protected String shutdown() {
 		return "sudo poweroff";
