@@ -1,5 +1,7 @@
 package messages;
 
+import commands.OSCommands;
+
 /**
  * Created by paladini on 6/22/15.
  */

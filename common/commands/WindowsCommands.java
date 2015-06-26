@@ -1,4 +1,4 @@
-package messages;
+package commands;
 
 public class WindowsCommands extends OSCommands {
 

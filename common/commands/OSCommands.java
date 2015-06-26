@@ -1,4 +1,4 @@
-package messages;
+package commands;
 
 public class OSCommands {
 	private static String os = System.getProperty("os.name").toLowerCase();

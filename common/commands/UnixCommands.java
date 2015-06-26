@@ -1,4 +1,4 @@
-package messages;
+package commands;
 
 public class UnixCommands extends OSCommands {
 
