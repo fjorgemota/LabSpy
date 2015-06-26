@@ -6,6 +6,7 @@ package messages;
 public class RestartMessageBase extends BaseCommandMessage {
 
     protected String getCommand() {
-        return "sudo reboot";
+        OSCommands os = OSCommands.getInstance();
+        return os.restart();
     }
 }

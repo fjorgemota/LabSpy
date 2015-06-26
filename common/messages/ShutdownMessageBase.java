@@ -5,6 +5,7 @@ package messages;
  */
 public class ShutdownMessageBase extends BaseCommandMessage {
     protected String getCommand() {
-        return "sudo poweroff";
+        OSCommands os = OSCommands.getInstance();
+        return os.shutdown();
     }
 }
