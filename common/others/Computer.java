@@ -1,4 +1,4 @@
-package config;
+package others;
 
 import java.io.Serializable;
 

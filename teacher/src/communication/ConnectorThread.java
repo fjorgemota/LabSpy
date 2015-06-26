@@ -1,18 +1,12 @@
 package communication;
 
-import config.Computer;
+import others.Computer;
 import config.Config;
 import messages.StartScreenshot;
 
 import java.awt.*;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.nio.channels.SelectionKey;
-import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.*;
 import java.util.List;

@@ -3,6 +3,8 @@ package config;
  * Esta classe é responsável por armazenar as configurações do LabSpy em um arquivo de objetos serializados.
  */
 
+import others.Computer;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
@@ -18,8 +20,6 @@ public class Config {
         checkEnvironment();
         checkAndParseFile();
     }
-
-
 
     public static Config getInstance() {
         if (singleton == null) {

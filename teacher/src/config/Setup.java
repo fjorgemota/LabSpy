@@ -1,6 +1,7 @@
 package config;
 
 import communication.RemoteSSH;
+import others.Computer;
 
 
 /**
