@@ -18,6 +18,7 @@ public class ClientThread extends BaseClientThread {
     private ScreenshotThread screenshotThread;
     private RobotThread robotThread;
    //private int frames;
+    private Thread runningScreenshotThread;
 
     public ClientThread(SocketChannel sock, RobotThread robot) {
         super(sock);
@@ -62,6 +63,12 @@ public class ClientThread extends BaseClientThread {
 
         } else if (msg instanceof ChangeFrames) {
             this.screenshotThread.setFrames(((ChangeFrames) msg).getFrames());
+            if (this.runningScreenshotThread == null) {
+                this.runningScreenshotThread = new Thread(this.screenshotThread);
+                this.runningScreenshotThread.setName("screenshotThread");
+                this.runningScreenshotThread.start();
+            }
+            this.screenshotThread.setRect(((StartScreenshot)msg).getRect());
         } else if (msg instanceof ResizeScreenshot) {
             this.screenshotThread.setRect(((ResizeScreenshot) msg).getRect());
         } else if (msg instanceof StopScreenshot) {

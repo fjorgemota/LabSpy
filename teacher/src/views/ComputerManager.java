@@ -6,12 +6,12 @@ package views;/*
 
 
 import config.*;
+import others.Computer;
 
 import javax.swing.DefaultListModel;
 import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 /**

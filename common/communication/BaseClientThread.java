@@ -28,11 +28,13 @@ public abstract class BaseClientThread implements Runnable {
     private BlockingQueue<ByteBuffer> send;
     private SelectionKey key;
     private Selector selector;
+    private boolean toWrite;
 
     public BaseClientThread(SocketChannel sock) {
         this.sock = sock;
         this.stopped = false;
         this.key = null;
+        this.toWrite = false;
         try {
             this.selector = Selector.open();
         } catch (IOException e) {
@@ -56,7 +58,6 @@ public abstract class BaseClientThread implements Runnable {
 
             ByteBuffer readBuf = null;
             ByteBuffer writeBuf = null;
-            boolean toWrite = false;
 
             int readSize = -1;
             while (!this.stopped) {
@@ -105,15 +106,17 @@ public abstract class BaseClientThread implements Runnable {
                     }
                 }
                 keys.clear();
-                if (this.send.isEmpty() && writeBuf == null) {
-                    if (toWrite) {
-                        this.key.interestOps(SelectionKey.OP_READ);
-                        toWrite = false;
-                    }
-                } else {
-                    if (!toWrite) {
-                        this.key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
-                        toWrite = true;
+                synchronized (this) {
+                    if (this.send.isEmpty() && writeBuf == null) {
+                        if (this.toWrite) {
+                            this.key.interestOps(SelectionKey.OP_READ);
+                            this.toWrite = false;
+                        }
+                    } else {
+                        if (!this.toWrite) {
+                            this.key.interestOps(SelectionKey.OP_READ | SelectionKey.OP_WRITE);
+                            this.toWrite = true;
+                        }
                     }
                 }
             }
@@ -174,7 +177,9 @@ public abstract class BaseClientThread implements Runnable {
                 }
                 break;
             }
-            this.selector.wakeup();
+            if (!this.toWrite) {
+                this.selector.wakeup();
+            }
         }
         catch (IOException e){
             e.printStackTrace();

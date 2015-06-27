@@ -5,8 +5,10 @@
  */
 package config;
 
+import java.io.File;
 import java.io.IOException;
 import communication.RemoteSSH;
+import others.Computer;
 
 /**
  * This class is responsible for setting-up a student client on a remote machine. 
@@ -16,17 +18,32 @@ import communication.RemoteSSH;
 public class SetupLinux extends Setup {
     
     private final String pathToInstall = "/var/lib/LabSpy/";
-    private final String clientSRC = "out/artifacts/Student/Student.jar";
-    private final String scriptSRC = "assets/labspy.sh";
+    private String clientSRC;
+    private String scriptSRC;
 
     public SetupLinux(RemoteSSH ssh) {
         super(ssh);
+        checkEnvironment();
     }
-    
+
     public SetupLinux(Computer c, String username, String password) {
         super(c, username, password);
+        checkEnvironment();
     }
-    
+
+    @Override
+    void uninstall() {
+        try {
+            this.ssh.executeCommand("sudo /etc/init.d/labspy_client stop");
+            this.ssh.executeCommand("sudo update-rc.d -f labspy_client remove");
+            this.ssh.executeCommand("sudo rm -f /etc/init.d/labspy_client");
+            this.ssh.executeCommand("sudo rm -rf /var/lib/LabSpy");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     void createDirectory() {
         try {
@@ -49,6 +66,7 @@ public class SetupLinux extends Setup {
     @Override
     void installToRunAtStartup() {
         try {
+            ssh.executeCommand("echo $SSH_CLIENT | awk '{ print $1}' | sudo tee /var/lib/LabSpy/addressList");
             ssh.executeCommand("sudo ln -s /var/lib/LabSpy/labspy.sh /etc/init.d/labspy_client");
             ssh.executeCommand("sudo chmod +x /etc/init.d/labspy_client");
             ssh.executeCommand("sudo update-rc.d labspy_client defaults 99 01");
@@ -66,6 +84,17 @@ public class SetupLinux extends Setup {
     String getClientSRC() {
         return this.clientSRC;
     }
-    
-    
+
+    private void checkEnvironment() {
+        String productionFolder = System.getProperty("user.home") + "/.labspy";
+        File f = new File("out/artifacts/Student/Student.jar");
+        if (!f.exists()) { // is in production environment
+            clientSRC = productionFolder + "/bin/Student.jar";
+            scriptSRC = productionFolder + "/bin/labspy.sh";
+        } else { // is in test / development environment
+            clientSRC = "out/artifacts/Student/Student.jar";
+            scriptSRC = "assets/labspy.sh";
+        }
+    }
+
 }

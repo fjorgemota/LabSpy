@@ -1,6 +1,6 @@
 package communication;
 
-import config.Computer;
+import others.Computer;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.ConnectionException;
 import net.schmizz.sshj.connection.channel.direct.Session;
@@ -65,14 +65,16 @@ public class RemoteSSH {
         }
     }
 
-    public void executeCommand(final String command) throws IOException {
+    public String executeCommand(final String command) throws IOException {
+        String output = null;
         SSHClient ssh = null;
         try {
             ssh = createConnection();
-            executeCommandBySSH(ssh, command);
+            output = executeCommandBySSH(ssh, command);
         } finally {
             ssh.disconnect();
         }
+        return output;
     }
 
     private SSHClient createConnection() throws IOException {
@@ -83,16 +85,17 @@ public class RemoteSSH {
         return ssh;
     }
 
-    private void executeCommandBySSH(final SSHClient ssh, final String command) throws ConnectionException, IOException, TransportException {
+    private String executeCommandBySSH(final SSHClient ssh, final String command) throws ConnectionException, IOException, TransportException {
 
         final Session session = ssh.startSession();
         BufferedReader bf = null;
-
+        String output = null;
         try {
             final Session.Command cmd = session.exec(command);
             bf = new BufferedReader(new InputStreamReader(cmd.getInputStream()));
             String line;
             while ((line = bf.readLine()) != null) {
+                output += line;
                 System.out.println(line);
             }
             cmd.join(1, TimeUnit.SECONDS);
@@ -100,6 +103,7 @@ public class RemoteSSH {
             secureClose(bf);
             secureClose(session);
         }
+        return output;
     }
 
     private void setupKeyVerifier(final SSHClient ssh) {

@@ -1,9 +1,4 @@
-#!/bin/sh
-
-# Only compile if flag "-nc" (-not-compile) isn't set. 
-if [[ $2 != "-nc" ]]; then
-    make compile
-fi
+#!/bin/bash
 
 if [[ $1 = "teacher" ]]; then
     make install_teacher

@@ -3,6 +3,8 @@ package config;
  * Esta classe é responsável por armazenar as configurações do LabSpy em um arquivo de objetos serializados.
  */
 
+import others.Computer;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.io.*;
@@ -15,7 +17,7 @@ public class Config {
 
     private Config() {
         computers = new ArrayList<Computer>();
-        pathToSave = System.getProperty("user.home") + "/.labspy/config.obj";
+        checkEnvironment();
         checkAndParseFile();
     }
 
@@ -101,9 +103,18 @@ public class Config {
                 e.printStackTrace();
             }
         } catch (FileNotFoundException e) {
-            // e.printStackTrace();
+             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void checkEnvironment() {
+        File f = new File("out/artifacts/Teacher/Teacher.jar");
+        if (!f.exists()) { // is in production environment
+            pathToSave = System.getProperty("user.home") + "/.labspy/config.obj";
+        } else { // is in test / development environment
+            pathToSave = "config.obj";
         }
     }
 

@@ -6,12 +6,12 @@ package views;
  */
 
 import config.*;
+import others.Computer;
+
 import javax.swing.DefaultListModel;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 /**
  * TODO: Currently disabling "next" button when enable "same_password_checkbox". Not listening for username_field and password_field changes.

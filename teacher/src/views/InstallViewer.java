@@ -5,15 +5,11 @@ package views;/*
  */
 
 import config.*;
+import others.Computer;
+
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -85,12 +81,7 @@ public class InstallViewer extends javax.swing.JFrame {
                     status_editable_label.setText("Installing and configuring " + c.toString() + "...");
 
                     // Doing the work
-                    try {
-                        //setup.install();
-                        Thread.sleep(1500);
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(InstallViewer.class.getName()).log(Level.SEVERE, null, ex);
-                    }
+                    setup.install();
 
                     // After installing Setup object.
                     progress_bar.setValue(i + 1);

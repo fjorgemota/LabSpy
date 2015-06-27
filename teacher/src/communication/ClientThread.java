@@ -1,17 +1,11 @@
 package communication;
 
-import config.Computer;
+import others.Computer;
 import messages.BaseMessage;
 import messages.InfoMessage;
 import messages.Screenshot;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.nio.channels.SocketChannel;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 /*!
  * Classe que implementa as remote_control referentes ao cliente.

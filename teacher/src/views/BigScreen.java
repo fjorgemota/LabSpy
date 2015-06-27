@@ -145,6 +145,7 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
 
             if (!this.client.isRunning()) {
                 this.dispose();
+                break;
             }
             if (this.isActive()) {
                 if (t == 0 && (this.position.getX() != x || this.position.getY() != y)) {
@@ -160,6 +161,7 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
                 continue;
             }
         }
+        client.sendMessage(new ResizeScreenshot(new Rectangle(400, 300)));
     }
 
     public void setFrames(int frames) {

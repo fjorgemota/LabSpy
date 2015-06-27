@@ -39,14 +39,7 @@ public class Main {
                     SocketChannel s = server.accept();
                     s.configureBlocking(false);
                     ClientThread cl = new ClientThread(s, robot);
-                    Thread client = new Thread(cl);
-                    client.setName("ClientThread");
-                    client.start();
-                    try {
-                        client.join();
-                    } catch (InterruptedException e) {
-                        continue;
-                    }
+                    cl.run();
                 }
             }
         } catch (IOException e) {

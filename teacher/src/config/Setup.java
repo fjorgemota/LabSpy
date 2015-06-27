@@ -1,6 +1,7 @@
 package config;
 
 import communication.RemoteSSH;
+import others.Computer;
 
 
 /**
@@ -22,6 +23,10 @@ public abstract class Setup {
 
     public void install() {
 
+        // Uninstall previous version of LabSpy for student (only if it already exists).
+        // You should kill the process of previous installed (and running) Labspy, remove it from startup and remove the older installation folder.
+        uninstall();
+
         // Creating folder in the remote machine.
         // You should create the folder where you'll install the student client.
         createDirectory();
@@ -36,11 +41,12 @@ public abstract class Setup {
         installToRunAtStartup();
 
     }
-    
+
+    abstract void uninstall();
     abstract void createDirectory();
     abstract void transferFiles();
     abstract void installToRunAtStartup();
-    
+
     // Forces developer to create the variables "pathToInstall" and clientSRC
     abstract String getPathToInstall();
     abstract String getClientSRC();
