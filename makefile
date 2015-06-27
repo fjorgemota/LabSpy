@@ -6,6 +6,7 @@ install_student: uninstall_student
 	sudo mkdir /var/lib/LabSpy/
 	sudo cp $(CURRENT_FOLDER)/out/artifacts/Student/Student.jar /var/lib/LabSpy/
 	sudo cp $(CURRENT_FOLDER)/assets/labspy.sh /var/lib/LabSpy/
+	sudo echo ""
 	sudo ln -s /var/lib/LabSpy/labspy.sh /etc/init.d/labspy_client
 	sudo chmod +x /etc/init.d/labspy_client
 	sudo update-rc.d labspy_client defaults 99 01

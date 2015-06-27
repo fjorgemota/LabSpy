@@ -86,15 +86,21 @@ public class SetupLinux extends Setup {
     }
 
     private void checkEnvironment() {
-        String productionFolder = System.getProperty("user.home") + "/.labspy";
-        File f = new File("out/artifacts/Student/Student.jar");
-        if (!f.exists()) { // is in production environment
-            clientSRC = productionFolder + "/bin/Student.jar";
-            scriptSRC = productionFolder + "/bin/labspy.sh";
-        } else { // is in test / development environment
-            clientSRC = "out/artifacts/Student/Student.jar";
-            scriptSRC = "assets/labspy.sh";
+        String env = System.getenv("LABSPY_ENV");
+        boolean dev = false;
+        if (env != null) {
+            if (env.equalsIgnoreCase("dev")) {
+                clientSRC = "out/artifacts/Student/Student.jar";
+                scriptSRC = "assets/labspy.sh";
+                dev = true;
+            }
         }
+
+        if (!dev) {
+            clientSRC = System.getProperty("user.home") + "/.labspy/bin/Student.jar";
+            scriptSRC = System.getProperty("user.home") + "/.labspy/bin/labspy.sh";
+        }
+
     }
 
 }

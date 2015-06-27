@@ -110,11 +110,18 @@ public class Config {
     }
 
     private void checkEnvironment() {
-        File f = new File("out/artifacts/Teacher/Teacher.jar");
-        if (!f.exists()) { // is in production environment
+        String env = System.getenv("LABSPY_ENV");
+        System.out.println(env);
+        boolean dev = false;
+        if (env != null) {
+            if (env.equalsIgnoreCase("dev")) { // in development environment
+                pathToSave = "config.obj";
+                dev = true;
+            }
+        }
+
+        if (!dev) { // in production environment
             pathToSave = System.getProperty("user.home") + "/.labspy/config.obj";
-        } else { // is in test / development environment
-            pathToSave = "config.obj";
         }
     }
 
