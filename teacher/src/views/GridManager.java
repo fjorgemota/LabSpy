@@ -1,10 +1,13 @@
 package views;
 
+import javax.imageio.ImageIO;
 import javax.management.JMException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,7 +38,7 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
    public GridManager(ConnectorThread st) {
         super("LabSpy - Overview");
         quantity = 3;
-        fps = 40;
+        fps = 5;
         System.out.print("passou!");
         _st = st;
         jp = new JPanel();
@@ -84,7 +87,7 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
                 this.update();
             }
             try {
-                Thread.sleep(/*1000/30*/fps);
+                Thread.sleep(1000/fps);
             } catch (InterruptedException e) {
                 continue;
             }
@@ -113,7 +116,7 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
                 thread.start();
                 break;
             } else if (command.equals(REGRID)) {
-                String qnt = JOptionPane.showInputDialog(null, "Number of rows:");
+                String qnt = JOptionPane.showInputDialog(null, "Number of Columns:");
                 int q = Integer.parseInt(qnt);
                 this.setQuantity(q);
                 break;
@@ -134,6 +137,7 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
     }
 
     public void update() {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         Collection<ClientThread> clients = _st.getClients();
         GroupLayout.ParallelGroup hg = layout.createParallelGroup();
         GroupLayout.SequentialGroup vg = layout.createSequentialGroup();
@@ -177,15 +181,20 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
             _verticalGroup.addComponent(lb);
             count++;
         }
-        boolean removeAll = false;
+        BufferedImage img = null;
+        try {
+            if (img == null) {
+                img = ImageIO.read(classLoader.getResourceAsStream("imagens/labspy400x400.png"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         for (String ip: this.buttons.keySet()) {
             if (!seenIP.contains(ip)) {
-                removeAll = true;
-                this.buttons.remove(ip);
+                JButton b = this.buttons.get(ip);
+                b.setIcon(new ImageIcon(img));
+                break;
             }
-        }
-        if (removeAll) {
-            jp.removeAll();
         }
         layout.setHorizontalGroup(hg);
         layout.setVerticalGroup(vg);

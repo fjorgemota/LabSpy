@@ -16,9 +16,6 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
     private boolean stopped;
     private MouseMoveMessage position;
     private int frames;
-    static final String SEND = "SEND";
-    static final String POWERDOWN = "POWERDOWN";
-    static final String POWERUP = "POWERUP";
 
     public BigScreen(ClientThread client, int fps) {
         super("LabSpy - BigScreen - "+client.getComputer().getIp());
@@ -156,7 +153,7 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
                 this.repaint();
             }
             try {
-                Thread.sleep(/*1000/30*/frames);
+                Thread.sleep(1000/frames);
             } catch (InterruptedException e) {
                 continue;
             }
