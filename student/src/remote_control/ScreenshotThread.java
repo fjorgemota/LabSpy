@@ -3,10 +3,12 @@ package remote_control;
 import communication.BaseClientThread;
 import messages.Screenshot;
 import messages.ScreenshotRequest;
+import org.imgscalr.Scalr;
 import org.w3c.dom.css.Rect;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.concurrent.locks.Lock;
@@ -49,47 +51,51 @@ public class ScreenshotThread implements Runnable {
         Rectangle screen = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
+        robot.sendMessage(new ScreenshotRequest(screen));
+
         if (classLoader == null) {
             classLoader = Class.class.getClassLoader();
         }
         BufferedImage cursor = null;
+        double fpsAvg = 0;
         while(this.run) {
-            synchronized (this) {
-                robot.sendMessage(new ScreenshotRequest(screen));
-                Screenshot screenshot = robot.getLastScreenshot();
-                Image image = screenshot.getImage().getImage();
-                // Create a buffered image with transparency
-                BufferedImage bImage = new BufferedImage(
-                        (int) screen.getWidth(),
-                        (int) screen.getHeight(),
-                        BufferedImage.TYPE_INT_ARGB
-                );
+            robot.sendMessage(new ScreenshotRequest(screen));
+            long start = System.currentTimeMillis();
+            Screenshot screenshot = robot.getLastScreenshot();
 
-                Graphics2D bGr = bImage.createGraphics();
-                bGr.drawImage(image, 0, 0, null);
-                Point location = MouseInfo.getPointerInfo().getLocation();
-                bGr.translate(0, 0);
-                try {
-                    if (cursor == null) {
-                        cursor = ImageIO.read(classLoader.getResourceAsStream("imagens/cursor.png"));
-                    }
-                    if (cursor != null) {
-                        bGr.drawImage(cursor, (int) location.getX(), (int) location.getY(), 18, 30, null);
-                    } else {
-                        bGr.setColor(Color.BLUE);
-                        bGr.drawOval( (int) location.getX(), (int) location.getY(), 20, 20);
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+            BufferedImage bImage = (BufferedImage) screenshot.getImage().getImage();
+            // Create a buffered image with transparency
+            Graphics bGr = bImage.createGraphics();
+            Point location = MouseInfo.getPointerInfo().getLocation();
+            bGr.translate(0, 0);
+            try {
+                if (cursor == null) {
+                    cursor = ImageIO.read(classLoader.getResourceAsStream("imagens/cursor.png"));
                 }
-                bGr.dispose();
+                if (cursor != null) {
+                    bGr.drawImage(cursor, (int) location.getX(), (int) location.getY(), 18, 30, null);
+                } else {
+                    bGr.setColor(Color.BLUE);
+                    bGr.drawOval( (int) location.getX(),  (int) location.getY(), 20, 20);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            bGr.dispose();
 
+            bImage = Scalr.resize(
+                    bImage,
+                    Scalr.Method.SPEED,
+                    (int) this.rect.getWidth(),
+                    (int) this.rect.getHeight()
+            );
 
-                screenshot.getImage().setImage(bImage.getScaledInstance(
-                        (int) this.rect.getWidth(),
-                        (int) this.rect.getHeight(),
-                        Image.SCALE_FAST
-                ));
+            screenshot.getImage().setImage(bImage);
+
+            fpsAvg = ((1000 / (System.currentTimeMillis() - start+1))+fpsAvg)/2;
+            System.out.println("FPS: " + Math.round(fpsAvg));
+
+            synchronized (this) {
                 if (this.run) {
                     this.client.sendMessage(screenshot);
                 }

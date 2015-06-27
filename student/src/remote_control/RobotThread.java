@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /*!
  * Robo que e responsavel pela sincronizaçao do mouse do
@@ -17,26 +18,26 @@ public class RobotThread implements Runnable {
     private BlockingQueue<RobotMessage> send;
     private BlockingQueue<Screenshot> screenshots;
     private MouseMoveMessage position;
+    private ExecutorService executor;
+    private Rectangle screen;
 
     public RobotThread() {
-        this.send = new LinkedBlockingQueue<>(100);
-        this.screenshots = new LinkedBlockingQueue<>(2);
+        this.send = new ArrayBlockingQueue<>(100, true);
+        this.screenshots = new ArrayBlockingQueue<>(10, true);
         this.position = null;
+        this.screen = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
     }
 
     @Override
     public void run() {
-        try {
-            Robot r = new Robot();
-
-            Rectangle screen = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
-            while (true) {
-                RobotMessage msg = null;
-                try {
-                    msg = this.send.take();
-                } catch (InterruptedException e) {
-                    continue;
+        Robot r = null;
+        while (true) {
+            try {
+                if (r == null) {
+                    r = new Robot();
                 }
+                RobotMessage msg;
+                msg = this.send.take();
                 synchronized (this) {
                     if (this.position != null) {
                         int x = (int) ((
@@ -73,9 +74,11 @@ public class RobotThread implements Runnable {
                     e2.printStackTrace();
                 }
                 r.waitForIdle();
+            } catch (AWTException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                continue;
             }
-        } catch (AWTException e) {
-            e.printStackTrace();
         }
     }
 
