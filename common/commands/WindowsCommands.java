@@ -2,11 +2,11 @@ package commands;
 
 public class WindowsCommands extends OSCommands {
 
-	protected String shutdown() {
+	public String shutdown() {
 		return "shutdown /s";
 	}
 
-	protected String restart() {
+	public String restart() {
 		return "shutdown /r";
 	}
 }

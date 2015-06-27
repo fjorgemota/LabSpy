@@ -1,18 +1,20 @@
 package commands;
 
-public class OSCommands {
+public abstract class OSCommands {
 	private static String os = System.getProperty("os.name").toLowerCase();
 	
 	public static OSCommands getInstance() {
-		if (this.os.indexOf("nux") >= 0) {
+		if (os.indexOf("nux") >= 0) {
 			LinuxCommands linux = new LinuxCommands();
 			return linux;
-		} else if (this.os.indexOf("win") >= 0) {
+		} else if (os.indexOf("win") >= 0) {
 			WindowsCommands windows = new WindowsCommands();
 			return windows;
+		} else {
+			return null;
 		}
 	}
 
-	abstract String shutdown();
-	abstract String restart();
+	public abstract String shutdown();
+	public abstract String restart();
 }

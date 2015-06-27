@@ -2,11 +2,11 @@ package commands;
 
 public class LinuxCommands extends OSCommands {
 
-	protected String shutdown() {
+	public String shutdown() {
 		return "sudo poweroff";
 	}
 
-	protected String restart() {
+	public String restart() {
 		return "sudo reboot";
 	}
 }
