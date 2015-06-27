@@ -14,6 +14,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -40,7 +41,7 @@ public abstract class BaseClientThread implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.send = new LinkedBlockingQueue<>(100);
+        this.send = new ArrayBlockingQueue<ByteBuffer>(100, true);
     }
 
     public void stop() {
