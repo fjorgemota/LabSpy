@@ -21,11 +21,13 @@ public class ScreenshotThread implements Runnable {
     private RobotThread robot;
     private Rectangle rect;
     private boolean run;
+    private int fps;
 
     public ScreenshotThread(BaseClientThread client, RobotThread robot, Rectangle rect) {
         this.client = client;
         this.robot = robot;
         this.rect = rect;
+        this.fps = 40;
     }
 
     public synchronized void stop() {
@@ -34,6 +36,10 @@ public class ScreenshotThread implements Runnable {
 
     public synchronized void setRect(Rectangle rect) {
         this.rect = rect;
+    }
+
+    public synchronized void setFrames(int frames) {
+        this.fps = frames;
     }
 
     @Override
@@ -89,7 +95,7 @@ public class ScreenshotThread implements Runnable {
                 }
             }
             try {
-                Thread.sleep(1000/30);
+                Thread.sleep(/*1000/30*/fps);
             } catch (InterruptedException e){
                 continue;
             }

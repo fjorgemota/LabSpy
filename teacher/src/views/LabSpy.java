@@ -25,11 +25,12 @@ import java.io.IOException;
  * @author paladini
  */
 public class LabSpy extends javax.swing.JFrame implements ActionListener {
-    static final String CONFIGURATION = "CONFIGURATION";
-    static final String SCREEN = "SCREEN";
-    static final String CHAT = "CHAT";
-    static final String POWERDOWN = "POWERDOWN";
-    static final String POWERUP = "POWERUP";
+    private static final String CONFIGURATION = "CONFIGURATION";
+    private static final String SCREEN = "SCREEN";
+    private static final String CHAT = "CHAT";
+
+    private static final String POWERDOWN = "POWERDOWN";
+    private static final String POWERUP = "POWERUP";
     private Config configuration;
     private ConnectorThread connectorThread;
     private GridManager g;
@@ -80,6 +81,8 @@ public class LabSpy extends javax.swing.JFrame implements ActionListener {
         itemChat.setActionCommand(CHAT);
         itemChat.addActionListener(this);
         students.add(itemChat);
+
+
 
         JMenuItem itemPowerDown = new JMenuItem("Power off");
         itemPowerDown.setActionCommand(POWERDOWN);
@@ -134,10 +137,12 @@ public class LabSpy extends javax.swing.JFrame implements ActionListener {
             Messenger c = new Messenger();
             c.setVisible(true);
             dispose();
+
         } else if (command.equals(POWERDOWN)) {
             JOptionPane.showMessageDialog(null, "Sending message for power off!");
         } else if (command.equals(POWERUP)) {
             JOptionPane.showMessageDialog(null, "Sending message for power on!");
+            //client.sendMessage((new ShutdownMessageBase()).getCommand());
         }
     }
 

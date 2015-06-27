@@ -1,9 +1,11 @@
 package communication;
 
 import messages.*;
+import org.bouncycastle.jcajce.provider.symmetric.ARC4;
 import remote_control.RobotThread;
 import remote_control.ScreenshotThread;
 
+import javax.swing.*;
 import java.awt.*;
 import java.nio.channels.SocketChannel;
 
@@ -15,6 +17,7 @@ import java.nio.channels.SocketChannel;
 public class ClientThread extends BaseClientThread {
     private ScreenshotThread screenshotThread;
     private RobotThread robotThread;
+   //private int frames;
 
     public ClientThread(SocketChannel sock, RobotThread robot) {
         super(sock);
@@ -30,12 +33,35 @@ public class ClientThread extends BaseClientThread {
 
     @Override
     protected void receiveMessage(BaseMessage msg) {
+        final BaseMessage mens = msg;
         if (msg instanceof StartScreenshot) {
             this.screenshotThread.stop();
             this.screenshotThread = new ScreenshotThread(this, this.robotThread, ((StartScreenshot) msg).getRect());
             Thread screenshotThreadReal = new Thread(this.screenshotThread);
             screenshotThreadReal.setName("screenshotThread");
             screenshotThreadReal.start();
+        } else if (msg instanceof InfoMessage) {
+            final Runnable doHelloWorld = new Runnable() {
+                public void run() {
+                    //System.out.println("Hello World on " + Thread.currentThread());
+                    JOptionPane.showMessageDialog(null, ((InfoMessage) mens).getMessage());
+                }
+            };
+            Thread t = new Thread() {
+                public void run() {
+                    try {
+                        SwingUtilities.invokeAndWait(doHelloWorld);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            t.start();
+
+            SwingUtilities.invokeLater(doHelloWorld);
+
+        } else if (msg instanceof ChangeFrames) {
+            this.screenshotThread.setFrames(((ChangeFrames) msg).getFrames());
         } else if (msg instanceof ResizeScreenshot) {
             this.screenshotThread.setRect(((ResizeScreenshot) msg).getRect());
         } else if (msg instanceof StopScreenshot) {

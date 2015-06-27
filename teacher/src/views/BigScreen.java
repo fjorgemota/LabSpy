@@ -5,6 +5,7 @@ import messages.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
 
 /**
@@ -14,9 +15,14 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
     private ClientThread client;
     private boolean stopped;
     private MouseMoveMessage position;
+    private int frames;
+    static final String SEND = "SEND";
+    static final String POWERDOWN = "POWERDOWN";
+    static final String POWERUP = "POWERUP";
 
-    public BigScreen(ClientThread client) {
+    public BigScreen(ClientThread client, int fps) {
         super("LabSpy - BigScreen - "+client.getComputer().getIp());
+        this.frames = fps;
         this.client = client;
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
@@ -25,8 +31,10 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
         this.addKeyListener(this);
         this.setVisible(true);
         this.setSize(800, 600);
-    }
 
+
+
+    }
     @Override
     public void mouseClicked(MouseEvent e) {
     }
@@ -128,7 +136,7 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
         this.setIgnoreRepaint(false);
         client.sendMessage(new ResizeScreenshot(new Rectangle(this.getWidth(), this.getHeight())));
         while (!this.stopped) {
-            t = (t++) % 40;
+            t = (t++) % this.frames;
             if (t == 0 && (this.getWidth() != width || this.getHeight() != height)) {
                 client.sendMessage(new ResizeScreenshot(new Rectangle(this.getWidth(), this.getHeight())));
                 width = this.getWidth();
@@ -147,11 +155,15 @@ public class BigScreen extends JFrame implements MouseListener, MouseWheelListen
                 this.repaint();
             }
             try {
-                Thread.sleep(1000/30);
+                Thread.sleep(/*1000/30*/frames);
             } catch (InterruptedException e) {
                 continue;
             }
         }
+    }
+
+    public void setFrames(int frames) {
+        this.frames = frames;
     }
 
     @Override
