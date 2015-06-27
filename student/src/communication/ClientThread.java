@@ -1,7 +1,6 @@
 package communication;
 
 import messages.*;
-import org.bouncycastle.jcajce.provider.symmetric.ARC4;
 import remote_control.RobotThread;
 import remote_control.ScreenshotThread;
 
@@ -36,13 +35,14 @@ public class ClientThread extends BaseClientThread {
     protected void receiveMessage(BaseMessage msg) {
         final BaseMessage mens = msg;
         if (msg instanceof StartScreenshot) {
-            this.screenshotThread.stop();
-            this.screenshotThread = new ScreenshotThread(this, this.robotThread, ((StartScreenshot) msg).getRect());
-            Thread screenshotThreadReal = new Thread(this.screenshotThread);
-            screenshotThreadReal.setName("screenshotThread");
-            screenshotThreadReal.start();
+            if (this.runningScreenshotThread == null) {
+                this.runningScreenshotThread = new Thread(this.screenshotThread);
+                this.runningScreenshotThread.setName("screenshotThread");
+                this.runningScreenshotThread.start();
+            }
+            this.screenshotThread.setRect(((StartScreenshot) msg).getRect());
         } else if (msg instanceof InfoMessage) {
-            final Runnable doHelloWorld = new Runnable() {
+            Runnable showMessage = new Runnable() {
                 public void run() {
                     //System.out.println("Hello World on " + Thread.currentThread());
                     JOptionPane.showMessageDialog(null, ((InfoMessage) mens).getMessage());
@@ -51,7 +51,7 @@ public class ClientThread extends BaseClientThread {
             Thread t = new Thread() {
                 public void run() {
                     try {
-                        SwingUtilities.invokeAndWait(doHelloWorld);
+                        SwingUtilities.invokeAndWait(showMessage);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -59,16 +59,13 @@ public class ClientThread extends BaseClientThread {
             };
             t.start();
 
-            SwingUtilities.invokeLater(doHelloWorld);
-
         } else if (msg instanceof ChangeFrames) {
-            this.screenshotThread.setFrames(((ChangeFrames) msg).getFrames());
             if (this.runningScreenshotThread == null) {
                 this.runningScreenshotThread = new Thread(this.screenshotThread);
                 this.runningScreenshotThread.setName("screenshotThread");
                 this.runningScreenshotThread.start();
             }
-            this.screenshotThread.setRect(((StartScreenshot)msg).getRect());
+            this.screenshotThread.setFrames(((ChangeFrames) msg).getFrames());
         } else if (msg instanceof ResizeScreenshot) {
             this.screenshotThread.setRect(((ResizeScreenshot) msg).getRect());
         } else if (msg instanceof StopScreenshot) {

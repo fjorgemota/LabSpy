@@ -106,6 +106,10 @@
     <pathelement location="${basedir}/lib/log4j-to-slf4j-2.1.jar"/>
     <pathelement location="${basedir}/lib/slf4j-api-1.7.7.jar"/>
   </path>
+
+  <path id="library.imgscalr.classpath">
+    <pathelement location="${basedir}/lib/imgscalr-lib-4.2.jar" />
+  </path>
   
   <!-- Modules -->
   
@@ -226,6 +230,7 @@
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
     <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
     <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
+    <path refid="library.imgscalr.classpath" />
   </path>
   
   <path id="student.runtime.production.module.classpath">
@@ -234,6 +239,7 @@
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
     <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
     <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
+    <path refid="library.imgscalr.classpath" />
   </path>
   
   <path id="student.module.classpath">
@@ -244,6 +250,7 @@
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
     <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
     <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
+    <path refid="library.imgscalr.classpath" />
   </path>
   
   <path id="student.runtime.module.classpath">
@@ -254,6 +261,7 @@
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
     <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
     <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
+    <path refid="library.imgscalr.classpath" />
   </path>
   
   
@@ -329,6 +337,7 @@
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
     <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
     <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
+    <path refid="library.imgscalr.classpath" />
   </path>
   
   <path id="teacher.runtime.production.module.classpath">
@@ -337,6 +346,7 @@
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
     <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
     <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
+    <path refid="library.imgscalr.classpath" />
   </path>
   
   <path id="teacher.module.classpath">
@@ -347,6 +357,7 @@
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
     <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
     <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
+    <path refid="library.imgscalr.classpath" />
   </path>
   
   <path id="teacher.runtime.module.classpath">
@@ -357,6 +368,7 @@
     <path refid="library.org.apache.clerezza.ext:org.json.simple:0.4.classpath"/>
     <path refid="library.com.hierynomus:sshj:0.12.0.classpath"/>
     <path refid="library.org.apache.logging.log4j:log4j-to-slf4j:2.1.classpath"/>
+    <path refid="library.imgscalr.classpath" />
   </path>
   
   
@@ -438,6 +450,7 @@
       <zipfileset file="${basedir}/lib/log4j-api-2.1.jar"/>
       <zipfileset file="${basedir}/lib/org.json.simple-0.4.jar"/>
       <zipfileset file="${basedir}/lib/json-simple-1.1.jar"/>
+      <zipfileset src="${basedir}/lib/imgscalr-lib-4.2.jar"/>
       <zipfileset dir="${student.output.dir}"/>
       <zipfileset dir="${basedir}/student/META-INF" prefix="META-INF"/>
       <zipfileset dir="${basedir}/student/imagens" prefix="imagens"/>
@@ -459,6 +472,7 @@
       <zipfileset src="${basedir}/lib/bcpkix-jdk15on-1.51.jar"  excludes="META-INF/*"/>
       <zipfileset src="${basedir}/lib/bcprov-jdk15on-1.51.jar"  excludes="META-INF/*"/>
       <zipfileset src="${basedir}/lib/jzlib-1.1.3.jar" excludes="META-INF/*" />
+      <zipfileset src="${basedir}/lib/imgscalr-lib-4.2.jar"/>
     </jar>
     <copy file="${temp.jar.path.Teacher.jar}" tofile="${artifact.temp.output.teacher}/Teacher.jar"/>
   </target>
