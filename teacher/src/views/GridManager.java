@@ -14,8 +14,7 @@ import java.util.HashMap;
 
 import communication.ClientThread;
 import communication.ConnectorThread;
-import messages.ChangeFrames;
-import messages.InfoMessage;
+import messages.*;
 
 /*!
  * Gerenciador em uma janela que permite que o servidor
@@ -29,18 +28,22 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
     JScrollPane js;
     boolean stopped;
     private int quantity;
-    private int fps;
+    private int fpsBigScreen;
+    private int fpsOverview;
     private static final String REGRID = "REGRID";
     private static final String FRAMEBG = "FRAMEBG";
     private static final String FRAMEST = "FRAMEST";
     private static final String SEND = "SEND";
+    private static final String BLOCKALL = "BLOCKALL";
+    private static final String UNBLOCKALL = "UNBLOCKALL";
+
     HashMap<String, JButton> buttons;
 
    public GridManager(ConnectorThread st) {
         super("LabSpy - Overview");
         quantity = 3;
-        fps = 5;
-        System.out.print("passou!");
+        fpsBigScreen = 30;
+        fpsOverview = 1;
         _st = st;
         jp = new JPanel();
         js = new JScrollPane(jp);
@@ -57,12 +60,12 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
         itemRegrid.addActionListener(this);
         menu.add(itemRegrid);
 
-        JMenuItem itemFramesST = new JMenuItem("Frames ScreenshotThread");
+        JMenuItem itemFramesST = new JMenuItem("FPS Overview");
         itemFramesST.setActionCommand(FRAMEST);
         itemFramesST.addActionListener(this);
         menu.add(itemFramesST);
 
-        JMenuItem itemFramesBG = new JMenuItem("Frames BigScreen");
+        JMenuItem itemFramesBG = new JMenuItem("FPS BigScreen");
         itemFramesBG.setActionCommand(FRAMEBG);
         itemFramesBG.addActionListener(this);
         menu.add(itemFramesBG);
@@ -71,6 +74,18 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
         itemSend.setActionCommand(SEND);
         itemSend.addActionListener(this);
         menu.add(itemSend);
+
+
+
+       JMenuItem itemBlock = new JMenuItem("Block All");
+       itemBlock.setActionCommand(BLOCKALL);
+       itemBlock.addActionListener(this);
+       menu.add(itemBlock);
+
+       JMenuItem itemUnblock = new JMenuItem("Unblock All");
+       itemUnblock.setActionCommand(UNBLOCKALL);
+       itemUnblock.addActionListener(this);
+       menu.add(itemUnblock);
 
         stopped = false;
         this.buttons = new HashMap<>();
@@ -93,7 +108,7 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
                 this.update();
             }
             try {
-                Thread.sleep(1000/fps);
+                Thread.sleep(1000/fpsOverview);
             } catch (InterruptedException e) {
                 continue;
             }
@@ -112,62 +127,74 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
         Collection<ClientThread> clients = _st.getClients();
         String command = e.getActionCommand();
         String ip = "";
-        if (command.equals(SEND)) {
+        String str = "";
+        int q = 0;
+        if (command.equals(REGRID)) {
+            String qnt = JOptionPane.showInputDialog(null, "Number of Columns:");
+            try {
+                q = Integer.parseInt(qnt);
+            } catch (NumberFormatException c) {
+                c.printStackTrace();
+            }
+            this.setQuantity(q);
+            return;
+        }
+        else if (command.equals(FRAMEST)) {
             ip = JOptionPane.showInputDialog(null, "Type the IP:");
         }
-        if (command.equals(FRAMEST)) {
-            ip = JOptionPane.showInputDialog(null, "Type the IP:");
+        else if (command.equals(SEND)) {
+            str = JOptionPane.showInputDialog(null, "Type the message:");
+        }
+        else if (command.equals(FRAMEBG)) {
+            String qnt = JOptionPane.showInputDialog(null, "Number of frames per second(for the BigScreen):");
+            try {
+                q = Integer.parseInt(qnt);
+            } catch (NumberFormatException c) {
+                c.printStackTrace();
+                return;
+            }
+            if (q <= 0) {
+                q = 1;
+            }
+            this.fpsBigScreen = q;
+            return;
+        } else if (command.equals(FRAMEST)) {
+            String qnt = JOptionPane.showInputDialog(null, "Number of frames per second (for the Overview):");
+            try {
+                q = Integer.parseInt(qnt);
+            } catch (NumberFormatException c) {
+                c.printStackTrace();
+                return;
+            }
+            if (q <= 0) {
+                q = 1;
+            }
+            this.fpsOverview = q;
         }
         for (ClientThread client : clients) {
             if (client.getComputer().getIp().equals(e.getActionCommand())) {
-                BigScreen big = new BigScreen(client, fps);
+                BigScreen big = new BigScreen(client, fpsBigScreen);
                 Thread thread = new Thread(big);
                 thread.start();
                 break;
-            } else if (command.equals(REGRID)) {
-                String qnt = JOptionPane.showInputDialog(null, "Number of Columns:");
-                int q = 0;
-                try {
-                    q = Integer.parseInt(qnt);
-                } catch (NumberFormatException c) {
-                    c.printStackTrace();
-                }
-                this.setQuantity(q);
-                break;
             } else if (command.equals(FRAMEST)) {
-                if (client.getComputer().getIp().equals(ip)) {
-                    String qnt = JOptionPane.showInputDialog(null, "Number of frames per second(for the ScreenshotThread):");
-                    int q = 0;
-                    try {
-                        q = Integer.parseInt(qnt);
-                    } catch (NumberFormatException c) {
-                        c.printStackTrace();
-                    }
-                    client.sendMessage(new ChangeFrames(q));
-                    break;
-                }
-            } else if (command.equals(FRAMEBG)) {
-                String qnt = JOptionPane.showInputDialog(null, "Number of frames per second(for the BigScreen):");
-                int q = 0;
-                try {
-                    q = Integer.parseInt(qnt);
-                } catch (NumberFormatException c) {
-                    c.printStackTrace();
-                }
-                this.setFrames(q);
-                break;
+                client.sendMessage(new ChangeFrames(this.fpsOverview));
             } else if (command.equals(SEND)) {
-                if (client.getComputer().getIp().equals(ip)) {
-                    String str = JOptionPane.showInputDialog(null, "Type the message:");
-                    client.sendMessage(new InfoMessage(str));
-                    break;
-                }
+                client.sendMessage(new InfoMessage(str));
+            } else if (command.equals(BLOCKALL)) {
+                client.sendMessage(new BlockMessage());
+            }  else if (command.equals(UNBLOCKALL)) {
+                client.sendMessage(new UnblockMessage());
             }
         }
     }
 
     public void update() {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+        if (classLoader == null) {
+            classLoader = Class.class.getClassLoader();
+        }
         Collection<ClientThread> clients = _st.getClients();
         GroupLayout.ParallelGroup hg = layout.createParallelGroup();
         GroupLayout.SequentialGroup vg = layout.createSequentialGroup();
@@ -191,13 +218,13 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
             JButton lb;
             if (this.buttons.containsKey(ip)) {
                 lb = this.buttons.get(ip);
-                lb.setIcon(new ImageIcon(cl.getLastScreenshot().getImage().getImage().getScaledInstance(
+                lb.setIcon(new ImageIcon(cl.getLastScreenshot().getImage().getScaledInstance(
                         400,
                         300,
                         Image.SCALE_FAST
                 )));
             } else {
-                lb = new JButton(new ImageIcon(cl.getLastScreenshot().getImage().getImage().getScaledInstance(
+                lb = new JButton(new ImageIcon(cl.getLastScreenshot().getImage().getScaledInstance(
                         400,
                         300,
                         Image.SCALE_FAST
@@ -233,10 +260,6 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
     }
     private void setQuantity(int qnt) {
         this.quantity = qnt;
-        this.update();
-    }
-    private void setFrames(int qnt) {
-        this.fps = qnt;
         this.update();
     }
 }

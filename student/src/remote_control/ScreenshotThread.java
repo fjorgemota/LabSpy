@@ -24,12 +24,14 @@ public class ScreenshotThread implements Runnable {
     private Rectangle rect;
     private boolean run;
     private int fps;
+    private BufferedImage lastScreenshot;
 
     public ScreenshotThread(BaseClientThread client, RobotThread robot, Rectangle rect) {
         this.client = client;
         this.robot = robot;
         this.rect = rect;
         this.fps = 1;
+        this.lastScreenshot = null;
     }
 
     public synchronized void stop() {
@@ -42,6 +44,11 @@ public class ScreenshotThread implements Runnable {
 
     public synchronized void setFrames(int frames) {
         this.fps = frames;
+    }
+
+    public synchronized BufferedImage getLastScreenshot()
+    {
+        return this.lastScreenshot;
     }
 
     @Override
@@ -63,7 +70,7 @@ public class ScreenshotThread implements Runnable {
             long start = System.currentTimeMillis();
             Screenshot screenshot = robot.getLastScreenshot();
 
-            BufferedImage bImage = (BufferedImage) screenshot.getImage().getImage();
+            BufferedImage bImage = screenshot.getImage();
             // Create a buffered image with transparency
             Graphics bGr = bImage.createGraphics();
             Point location = MouseInfo.getPointerInfo().getLocation();
@@ -83,21 +90,31 @@ public class ScreenshotThread implements Runnable {
             }
             bGr.dispose();
 
+            int width = (int) this.rect.getWidth();
+            int height = (int) this.rect.getHeight();
+            if (width <= 0) {
+                width = 1;
+            }
+
+            if (height <= 0) {
+                height = 1;
+            }
+
             bImage = Scalr.resize(
                     bImage,
                     Scalr.Method.SPEED,
-                    (int) this.rect.getWidth(),
-                    (int) this.rect.getHeight()
+                    width,
+                    height
             );
 
-            screenshot.getImage().setImage(bImage);
 
             fpsAvg = ((1000 / (System.currentTimeMillis() - start+1))+fpsAvg)/2;
-            System.out.println("FPS: " + Math.round(fpsAvg));
+            System.out.print("\rFPS: " + Math.round(fpsAvg)+"                ");
 
             synchronized (this) {
+                this.lastScreenshot = bImage;
                 if (this.run) {
-                    this.client.sendMessage(screenshot);
+                    this.client.sendMessage(new Screenshot(bImage));
                 }
             }
             try {

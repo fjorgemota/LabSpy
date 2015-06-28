@@ -1,7 +1,9 @@
 import communication.ClientThread;
 
 import messages.StartScreenshot;
+import remote_control.BlockThread;
 import remote_control.RobotThread;
+import remote_control.ScreenshotThread;
 
 import java.awt.*;
 import java.io.IOException;
@@ -17,18 +19,13 @@ import java.util.Iterator;
 
 public class Main {
     public static void main(String[] argv) {
+
         try {
             RobotThread robot = new RobotThread();
 
-            /** Starts two Threads to manage Robot class */
             Thread robotThread = new Thread(robot);
-            robotThread.setName("RobotThread1");
+            robotThread.setName("RobotThread");
             robotThread.start();
-
-            Thread robotThread2 = new Thread(robot);
-            robotThread2.setName("RobotThread2");
-            robotThread2.start();
-
 
             ServerSocketChannel server = ServerSocketChannel.open();
             server.configureBlocking(false);

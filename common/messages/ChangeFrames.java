@@ -7,11 +7,9 @@ public class ChangeFrames implements BaseMessage {
     private int frames;
 
     public ChangeFrames(int fps) {
-        this.frames = fps;
-    }
-
-
-    public void setFrames(int fps) {
+        if (fps <= 0) {
+            fps = 1;
+        }
         this.frames = fps;
     }
 

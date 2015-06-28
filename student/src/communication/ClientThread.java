@@ -1,7 +1,9 @@
 package communication;
 
+import jdk.nashorn.internal.ir.Block;
 import messages.*;
 import commands.OSCommands;
+import remote_control.BlockThread;
 import remote_control.RobotThread;
 import remote_control.ScreenshotThread;
 
@@ -17,18 +19,22 @@ import java.nio.channels.SocketChannel;
 public class ClientThread extends BaseClientThread {
     private ScreenshotThread screenshotThread;
     private RobotThread robotThread;
+    private BlockThread blockThread;
    //private int frames;
     private Thread runningScreenshotThread;
+    private Thread runningBlockThread;
 
     public ClientThread(SocketChannel sock, RobotThread robot) {
         super(sock);
         this.robotThread = robot;
         this.screenshotThread = new ScreenshotThread(this, this.robotThread, new Rectangle(400, 300));
+        this.blockThread = new BlockThread(this.screenshotThread);
     }
 
     public void stop() {
         super.stop();
         this.screenshotThread.stop();
+        this.blockThread.stop();
     }
 
 
@@ -78,6 +84,30 @@ public class ClientThread extends BaseClientThread {
         } else if (msg instanceof RestartMessage) {
             OSCommands restart = OSCommands.getInstance();
             restart.restart();
+        } else if (msg instanceof BlockMessage) {
+            if (this.runningScreenshotThread == null) {
+                this.runningScreenshotThread = new Thread(this.screenshotThread);
+                this.runningScreenshotThread.setName("screenshotThread");
+                this.runningScreenshotThread.start();
+            }
+            if (this.runningBlockThread == null) {
+                this.runningBlockThread = new Thread(this.blockThread);
+                this.runningBlockThread.setName("blockThread");
+                this.runningBlockThread.start();
+            }
+            this.blockThread.block();
+        } else if (msg instanceof UnblockMessage) {
+            if (this.runningScreenshotThread == null) {
+                this.runningScreenshotThread = new Thread(this.screenshotThread);
+                this.runningScreenshotThread.setName("screenshotThread");
+                this.runningScreenshotThread.start();
+            }
+            if (this.runningBlockThread == null) {
+                this.runningBlockThread = new Thread(this.blockThread);
+                this.runningBlockThread.setName("blockThread");
+                this.runningBlockThread.start();
+            }
+            this.blockThread.unblock();
         } else {
             System.out.println(msg.toString());
         }

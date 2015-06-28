@@ -6,13 +6,13 @@ import messages.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
 
 /**
  * Created by fernando on 24/05/15.
  */
 public class BigScreenPanel extends JPanel implements MouseListener, MouseWheelListener, MouseMotionListener, KeyListener {
     private ClientThread client;
-    private boolean stopped;
     private MouseMoveMessage position;
 
     public BigScreenPanel(ClientThread client) {
@@ -115,7 +115,7 @@ public class BigScreenPanel extends JPanel implements MouseListener, MouseWheelL
 
     @Override
     public void paint(Graphics g) {
-        Image img = this.client.getLastScreenshot().getImage().getImage();
+        BufferedImage img = this.client.getLastScreenshot().getImage();
         if (img == null) {
             return;
         }

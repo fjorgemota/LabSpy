@@ -111,7 +111,6 @@ public class Config {
 
     private void checkEnvironment() {
         String env = System.getenv("LABSPY_ENV");
-        System.out.println(env);
         boolean dev = false;
         if (env != null) {
             if (env.equalsIgnoreCase("dev")) { // in development environment
