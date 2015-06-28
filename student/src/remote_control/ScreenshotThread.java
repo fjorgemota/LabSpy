@@ -29,7 +29,7 @@ public class ScreenshotThread implements Runnable {
         this.client = client;
         this.robot = robot;
         this.rect = rect;
-        this.fps = 40;
+        this.fps = 1;
     }
 
     public synchronized void stop() {
@@ -101,7 +101,7 @@ public class ScreenshotThread implements Runnable {
                 }
             }
             try {
-                Thread.sleep(/*1000/30*/fps);
+                Thread.sleep(1000/fps);
             } catch (InterruptedException e){
                 continue;
             }

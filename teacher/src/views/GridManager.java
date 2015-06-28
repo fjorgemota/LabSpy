@@ -1,10 +1,13 @@
 package views;
 
+import javax.imageio.ImageIO;
 import javax.management.JMException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,14 +31,15 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
     private int quantity;
     private int fps;
     private static final String REGRID = "REGRID";
-    private static final String FRAME = "FRAME";
+    private static final String FRAMEBG = "FRAMEBG";
+    private static final String FRAMEST = "FRAMEST";
     private static final String SEND = "SEND";
     HashMap<String, JButton> buttons;
 
    public GridManager(ConnectorThread st) {
         super("LabSpy - Overview");
         quantity = 3;
-        fps = 40;
+        fps = 5;
         System.out.print("passou!");
         _st = st;
         jp = new JPanel();
@@ -53,10 +57,15 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
         itemRegrid.addActionListener(this);
         menu.add(itemRegrid);
 
-        JMenuItem itemFrames = new JMenuItem("Frames");
-        itemFrames.setActionCommand(FRAME);
-        itemFrames.addActionListener(this);
-        menu.add(itemFrames);
+        JMenuItem itemFramesST = new JMenuItem("Frames ScreenshotThread");
+        itemFramesST.setActionCommand(FRAMEST);
+        itemFramesST.addActionListener(this);
+        menu.add(itemFramesST);
+
+        JMenuItem itemFramesBG = new JMenuItem("Frames BigScreen");
+        itemFramesBG.setActionCommand(FRAMEBG);
+        itemFramesBG.addActionListener(this);
+        menu.add(itemFramesBG);
 
         JMenuItem itemSend = new JMenuItem("Send Message");
         itemSend.setActionCommand(SEND);
@@ -84,7 +93,7 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
                 this.update();
             }
             try {
-                Thread.sleep(/*1000/30*/fps);
+                Thread.sleep(1000/fps);
             } catch (InterruptedException e) {
                 continue;
             }
@@ -106,6 +115,9 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
         if (command.equals(SEND)) {
             ip = JOptionPane.showInputDialog(null, "Type the IP:");
         }
+        if (command.equals(FRAMEST)) {
+            ip = JOptionPane.showInputDialog(null, "Type the IP:");
+        }
         for (ClientThread client : clients) {
             if (client.getComputer().getIp().equals(e.getActionCommand())) {
                 BigScreen big = new BigScreen(client, fps);
@@ -113,15 +125,36 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
                 thread.start();
                 break;
             } else if (command.equals(REGRID)) {
-                String qnt = JOptionPane.showInputDialog(null, "Number of rows:");
-                int q = Integer.parseInt(qnt);
+                String qnt = JOptionPane.showInputDialog(null, "Number of Columns:");
+                int q = 0;
+                try {
+                    q = Integer.parseInt(qnt);
+                } catch (NumberFormatException c) {
+                    c.printStackTrace();
+                }
                 this.setQuantity(q);
                 break;
-            } else if (command.equals(FRAME)) {
-                String qnt = JOptionPane.showInputDialog(null, "Number of frames per second:");
-                int q = Integer.parseInt(qnt);
+            } else if (command.equals(FRAMEST)) {
+                if (client.getComputer().getIp().equals(ip)) {
+                    String qnt = JOptionPane.showInputDialog(null, "Number of frames per second(for the ScreenshotThread):");
+                    int q = 0;
+                    try {
+                        q = Integer.parseInt(qnt);
+                    } catch (NumberFormatException c) {
+                        c.printStackTrace();
+                    }
+                    client.sendMessage(new ChangeFrames(q));
+                    break;
+                }
+            } else if (command.equals(FRAMEBG)) {
+                String qnt = JOptionPane.showInputDialog(null, "Number of frames per second(for the BigScreen):");
+                int q = 0;
+                try {
+                    q = Integer.parseInt(qnt);
+                } catch (NumberFormatException c) {
+                    c.printStackTrace();
+                }
                 this.setFrames(q);
-                client.sendMessage(new ChangeFrames(q));
                 break;
             } else if (command.equals(SEND)) {
                 if (client.getComputer().getIp().equals(ip)) {
@@ -134,6 +167,7 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
     }
 
     public void update() {
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         Collection<ClientThread> clients = _st.getClients();
         GroupLayout.ParallelGroup hg = layout.createParallelGroup();
         GroupLayout.SequentialGroup vg = layout.createSequentialGroup();
@@ -177,15 +211,20 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
             _verticalGroup.addComponent(lb);
             count++;
         }
-        boolean removeAll = false;
+        BufferedImage img = null;
+        try {
+            if (img == null) {
+                img = ImageIO.read(classLoader.getResourceAsStream("imagens/labspy400x400.png"));
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         for (String ip: this.buttons.keySet()) {
             if (!seenIP.contains(ip)) {
-                removeAll = true;
-                this.buttons.remove(ip);
+                JButton b = this.buttons.get(ip);
+                b.setIcon(new ImageIcon(img));
+                break;
             }
-        }
-        if (removeAll) {
-            jp.removeAll();
         }
         layout.setHorizontalGroup(hg);
         layout.setVerticalGroup(vg);

@@ -16,9 +16,6 @@ public class BigScreen extends JFrame implements Runnable {
     private boolean stopped;
     private MouseMoveMessage position;
     private int frames;
-    static final String SEND = "SEND";
-    static final String POWERDOWN = "POWERDOWN";
-    static final String POWERUP = "POWERUP";
     private BigScreenPanel panel;
 
     public BigScreen(ClientThread client, int fps) {
@@ -74,7 +71,7 @@ public class BigScreen extends JFrame implements Runnable {
                 this.repaint();
             }
             try {
-                Thread.sleep(/*1000/30*/frames);
+                Thread.sleep(1000/frames);
             } catch (InterruptedException e) {
                 continue;
             }
