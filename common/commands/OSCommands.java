@@ -11,7 +11,8 @@ public abstract class OSCommands {
 			WindowsCommands windows = new WindowsCommands();
 			return windows;
 		} else {
-			return null;
+			DummyCommands dummy = new DummyCommands();
+			return dummy;
 		}
 	}
 
