@@ -304,7 +304,7 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
                 }
             } else {
                 if (cl.isRunning()) {
-                    bImage = cl.getLastScreenshot().getImage();
+                    bImage = cl.getLastScreenshot() == null ? null : cl.getLastScreenshot().getImage();
                 }
                 if (bImage == null) {
                     bImage = placeholderImg;
