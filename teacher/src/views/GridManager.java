@@ -173,11 +173,11 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
             this.setQuantity(q);
             return;
         }
-        else if (command.equals(FRAMEST)) {
-            ip = JOptionPane.showInputDialog(null, "Type the IP:");
-        }
         else if (command.equals(SEND)) {
             str = JOptionPane.showInputDialog(null, "Type the message:");
+            if (str.trim().isEmpty()) {
+                return;
+            }
         }
         else if (command.equals(FRAMEBG)) {
             String qnt = JOptionPane.showInputDialog(null, "Number of frames per second(for the BigScreen):");
