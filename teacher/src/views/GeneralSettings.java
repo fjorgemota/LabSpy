@@ -196,7 +196,7 @@ public class GeneralSettings extends javax.swing.JFrame {
     private void computerList_listValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_computerList_listValueChanged
         if (computerList_list.getSelectedValuesList().isEmpty() || 
                 (same_password_checkbox.isSelected() && 
-                (username_field.getText().isEmpty() || password_field.getText().isEmpty()) )) {
+                (username_field.getText().isEmpty() || password_field.getPassword().length == 0) )) {
             next.setEnabled(false);
         } else {
             next.setEnabled(true);
@@ -215,7 +215,7 @@ public class GeneralSettings extends javax.swing.JFrame {
             password_label.setEnabled(true);
             username_field.setEnabled(true);
             password_field.setEnabled(true);
-             if (computerList_list.getSelectedValuesList().isEmpty() || username_field.getText().isEmpty() || password_field.getText().isEmpty()) {
+             if (computerList_list.getSelectedValuesList().isEmpty() || username_field.getText().isEmpty() || password_field.getPassword().length == 0) {
                 next.setEnabled(false);
             } else {
                  next.setEnabled(true);
