@@ -15,6 +15,16 @@ public abstract class OSCommands {
 		}
 	}
 
-	public abstract String shutdown();
-	public abstract String restart();
+    protected void execute(String command) {
+        Process p;
+        try {
+            p = Runtime.getRuntime().exec(command);
+            p.waitFor();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+	public abstract void shutdown();
+	public abstract void restart();
 }

@@ -1,6 +1,7 @@
 package communication;
 
 import messages.*;
+import commands.OSCommands;
 import remote_control.RobotThread;
 import remote_control.ScreenshotThread;
 
@@ -72,8 +73,12 @@ public class ClientThread extends BaseClientThread {
             this.screenshotThread.stop();
         } else if (msg instanceof RobotMessage) {
             this.robotThread.sendMessage((RobotMessage) msg);
-        } else if (msg instanceof BaseCommandMessage) {
-            ((BaseCommandMessage) msg).execute();
+        } else if (msg instanceof ShutdownMessage) {
+            OSCommands shutdown = OSCommands.getInstance();
+            shutdown.shutdown();
+        } else if (msg instanceof RestartMessage) {
+            OSCommands restart = OSCommands.getInstance();
+            restart.restart();
         } else {
             System.out.println(msg.toString());
         }
