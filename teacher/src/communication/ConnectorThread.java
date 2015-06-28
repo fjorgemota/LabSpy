@@ -22,7 +22,7 @@ public class ConnectorThread implements Runnable {
 
     public ConnectorThread(Config configuration) {
         this.configuration = configuration;
-        this.connections = new HashMap<>();
+        this.connections = new LinkedHashMap<String, ClientThread>();
         this.stopped = false;
     }
 
@@ -39,11 +39,11 @@ public class ConnectorThread implements Runnable {
         this.stopped = false;
         this.connections.clear();
         while (!this.stopped) {
-            List<Computer> computers = this.configuration.getComputers();
-            ArrayList<String> seenIP = new ArrayList<>();
+            ArrayList<Computer> computers = new ArrayList<Computer>(this.configuration.getComputers());
+            ArrayList<String> seenIP = new ArrayList<String>();
             for(Computer computer: computers) {
                 seenIP.add(computer.getIp());
-                if (this.connections.containsKey(computer.getIp())) {
+                if (this.connections.containsKey(computer.getIp()) && this.connections.get(computer.getIp()).isRunning()) {
                     continue;
                 }
                 SocketChannel connection;
@@ -51,20 +51,22 @@ public class ConnectorThread implements Runnable {
                     connection = SocketChannel.open(new InetSocketAddress(computer.getIp(), 9500));
                     connection.configureBlocking(false);
                 } catch (IOException e) {
-                    continue;
+                    connection = null;
                 }
                 ClientThread client = new ClientThread(connection, computer);
                 client.sendMessage(new StartScreenshot(new Rectangle(400, 300)));
-                Thread clientThread = new Thread(client);
-                clientThread.start();
+                if (client.isRunning()) {
+                    Thread clientThread = new Thread(client);
+                    clientThread.start();
+                }
                 this.connections.put(computer.getIp(), client);
             }
             /* Clean old connections */
             Set<Map.Entry<String, ClientThread>> it = this.connections.entrySet();
-            ArrayList<String> toRemove = new ArrayList<>();
+            ArrayList<String> toRemove = new ArrayList<String>();
             for(Map.Entry pair: it) {
                 ClientThread client = (ClientThread) pair.getValue();
-                if (!client.isRunning() || !seenIP.contains((String) pair.getKey())) {
+                if (!seenIP.contains((String) pair.getKey())) {
                     client.stop();
                     toRemove.add((String) pair.getKey());
                 }
@@ -74,8 +76,7 @@ public class ConnectorThread implements Runnable {
             }
             try {
                 Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                continue;
+            } catch (InterruptedException ignored) {
             }
         }
 

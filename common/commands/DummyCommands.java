@@ -7,4 +7,5 @@ public class DummyCommands extends OSCommands {
 
 	public void shutdown() {}
 	public void restart() {}
+	public void openBrowser(String url) {}
 }

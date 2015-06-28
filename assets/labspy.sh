@@ -1,4 +1,13 @@
 #!/bin/sh
+### BEGIN INIT INFO
+# Provides:          labspy_client
+# Required-Start:    $local_fs $network $all
+# Required-Stop:     $local_fs $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start LabSpy Student at boot time
+# Description:       Start LabSpy Student version at boot time to monitor the student computer
+### END INIT INFO
 SERVICE_NAME=labspy_client
 PATH_TO_JAR=/var/lib/LabSpy/Student.jar
 PID_PATH_NAME=/tmp/labspy_client_pid

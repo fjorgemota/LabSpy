@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 /**
  * Created by fernando on 24/05/15.
  */
-public class BigScreenPanel extends JPanel implements MouseListener, MouseWheelListener, MouseMotionListener, KeyListener {
+public class BigScreenPanel extends JPanel implements MouseListener, MouseWheelListener, MouseMotionListener {
     private ClientThread client;
     private MouseMoveMessage position;
 
@@ -20,7 +20,6 @@ public class BigScreenPanel extends JPanel implements MouseListener, MouseWheelL
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
         this.addMouseWheelListener(this);
-        this.addKeyListener(this);
         this.setVisible(true);
     }
 
@@ -82,21 +81,6 @@ public class BigScreenPanel extends JPanel implements MouseListener, MouseWheelL
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        this.client.sendMessage(new KeyPressMessage(e.getKeyCode()));
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        this.client.sendMessage(new KeyReleaseMessage(e.getKeyCode()));
-    }
-
-    @Override
     public void mouseDragged(MouseEvent e) {
 
     }
@@ -115,7 +99,11 @@ public class BigScreenPanel extends JPanel implements MouseListener, MouseWheelL
 
     @Override
     public void paint(Graphics g) {
-        BufferedImage img = this.client.getLastScreenshot().getImage();
+        Screenshot screenshot = this.client.getLastScreenshot();
+        if (screenshot == null) {
+            return;
+        }
+        BufferedImage img = screenshot.getImage();
         if (img == null) {
             return;
         }

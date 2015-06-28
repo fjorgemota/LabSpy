@@ -1,7 +1,6 @@
 package views;
 
 import javax.imageio.ImageIO;
-import javax.management.JMException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -36,6 +35,10 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
     private static final String SEND = "SEND";
     private static final String BLOCKALL = "BLOCKALL";
     private static final String UNBLOCKALL = "UNBLOCKALL";
+    static final String OPEN_BROWSER = "OPEN_BROWSER";
+    static final String SHUTDOWN = "SHUTDOWN";
+    static final String RESTART = "RESTART";
+    private BufferedImage placeholderImg = null;
 
     HashMap<String, JButton> buttons;
 
@@ -87,8 +90,26 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
        itemUnblock.addActionListener(this);
        menu.add(itemUnblock);
 
+
+       JMenuItem openBrowser = new JMenuItem("Open Browser in URL");
+       openBrowser.addActionListener(this);
+       openBrowser.setActionCommand(OPEN_BROWSER);
+       menu.add(openBrowser);
+
+
+
+       JMenuItem shutdown = new JMenuItem("Shutdown");
+       shutdown.addActionListener(this);
+       shutdown.setActionCommand(SHUTDOWN);
+       menu.add(shutdown);
+
+       JMenuItem restart = new JMenuItem("Restart");
+       restart.addActionListener(this);
+       restart.setActionCommand(RESTART);
+       menu.add(restart);
+
         stopped = false;
-        this.buttons = new HashMap<>();
+        this.buttons = new HashMap<String, JButton>();
         this.setContentPane(js);
         this.setSize(400, 400);
         this.update();
@@ -109,8 +130,7 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
             }
             try {
                 Thread.sleep(1000/fpsOverview);
-            } catch (InterruptedException e) {
-                continue;
+            } catch (InterruptedException ignored) {
             }
         }
         this._st.stop();
@@ -170,6 +190,12 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
                 q = 1;
             }
             this.fpsOverview = q;
+        } else if (command.equals(OPEN_BROWSER)) {
+            str = JOptionPane.showInputDialog(null, "Type the URL to Open:");
+        } else if (command.equals(SHUTDOWN) || command.equals(RESTART)) {
+            if (JOptionPane.showConfirmDialog(null, "Voce tem certeza que deseja desligar/reiniciar todos os computadores?", "Confirmacao", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+                return;
+            }
         }
         for (ClientThread client : clients) {
             if (client.getComputer().getIp().equals(e.getActionCommand())) {
@@ -185,6 +211,12 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
                 client.sendMessage(new BlockMessage());
             }  else if (command.equals(UNBLOCKALL)) {
                 client.sendMessage(new UnblockMessage());
+            } else if (command.equals(OPEN_BROWSER)) {
+                client.sendMessage(new OpenBrowserMessage(str));
+            } else if (command.equals(SHUTDOWN)) {
+                client.sendMessage(new ShutdownMessage());
+            } else if (command.equals(RESTART)) {
+                client.sendMessage(new RestartMessage());
             }
         }
     }
@@ -201,7 +233,6 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
         GroupLayout.ParallelGroup _verticalGroup = layout.createParallelGroup();
         GroupLayout.SequentialGroup _horizontalGroup = layout.createSequentialGroup();
         int count = 0;
-        ArrayList<String> seenIP = new ArrayList<>();
         for (ClientThread cl : clients) {
             if (count % quantity == 0) {
                     _horizontalGroup = layout.createSequentialGroup();
@@ -210,48 +241,60 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
                     vg.addGroup(_verticalGroup);
             }
 
-            if (cl.getLastScreenshot() == null || !cl.isRunning()) {
-                continue;
-            }
             String ip = cl.getComputer().getIp();
-            seenIP.add(ip);
+            String label = cl.getComputer().getLabel();
             JButton lb;
+            BufferedImage bImage = null;
+            BufferedImage nImage;
             if (this.buttons.containsKey(ip)) {
                 lb = this.buttons.get(ip);
-                lb.setIcon(new ImageIcon(cl.getLastScreenshot().getImage().getScaledInstance(
-                        400,
-                        300,
-                        Image.SCALE_FAST
-                )));
+                if (cl.isRunning()) {
+                    bImage = cl.getLastScreenshot() == null ? null : cl.getLastScreenshot().getImage();
+                }
+                if (bImage == null) {
+                    bImage = placeholderImg;
+                }
+                nImage = new BufferedImage(400, 300, BufferedImage.TYPE_INT_ARGB);
+                Graphics g = nImage.createGraphics();
+                g.drawImage(bImage, 0, 0, 400, 300, null);
+                g.dispose();
+                lb.setIcon(new ImageIcon(nImage));
+                if (label.isEmpty()) {
+                    lb.setToolTipText(ip);
+                } else {
+                    lb.setToolTipText(ip+ " - "+cl.getComputer().getLabel());
+                }
             } else {
-                lb = new JButton(new ImageIcon(cl.getLastScreenshot().getImage().getScaledInstance(
-                        400,
-                        300,
-                        Image.SCALE_FAST
-                )));
+                if (cl.isRunning()) {
+                    bImage = cl.getLastScreenshot().getImage();
+                }
+                if (bImage == null) {
+                    bImage = placeholderImg;
+                }
+                nImage = new BufferedImage(400, 300, BufferedImage.TYPE_INT_ARGB);
+                Graphics g = nImage.createGraphics();
+                g.drawImage(bImage, 0, 0, 400, 300, null);
+                g.dispose();
+                lb = new JButton(new ImageIcon(nImage));
                 lb.setActionCommand(ip);
                 lb.addActionListener(this);
-                lb.setToolTipText(ip);
+                if (label.isEmpty()) {
+                    lb.setToolTipText(ip);
+                } else {
+                    lb.setToolTipText(ip+ " - "+cl.getComputer().getLabel());
+                }
                 this.buttons.put(ip, lb);
             }
             _horizontalGroup.addComponent(lb);
             _verticalGroup.addComponent(lb);
             count++;
         }
-        BufferedImage img = null;
         try {
-            if (img == null) {
-                img = ImageIO.read(classLoader.getResourceAsStream("imagens/labspy400x400.png"));
+            if (placeholderImg == null) {
+                placeholderImg = ImageIO.read(classLoader.getResourceAsStream("imagens/labspy400x400.png"));
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        for (String ip: this.buttons.keySet()) {
-            if (!seenIP.contains(ip)) {
-                JButton b = this.buttons.get(ip);
-                b.setIcon(new ImageIcon(img));
-                break;
-            }
         }
         layout.setHorizontalGroup(hg);
         layout.setVerticalGroup(vg);

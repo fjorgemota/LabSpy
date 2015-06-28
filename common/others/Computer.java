@@ -23,7 +23,7 @@ public class Computer implements Serializable {
     }
     public void setLabel(String label) { this.label = label; }
     public String getLabel() { return this.label; }
-    
+
     public String toString() {
         return this.label.trim().isEmpty() ? this.ip : this.label;
     }

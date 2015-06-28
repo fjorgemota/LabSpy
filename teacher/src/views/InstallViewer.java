@@ -103,14 +103,14 @@ public class InstallViewer extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        JPanel jPanel1 = new JPanel();
+        JLabel jLabel1 = new JLabel();
         next = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        JLabel jLabel2 = new JLabel();
+        JScrollPane jScrollPane1 = new JScrollPane();
         status_textarea = new javax.swing.JTextArea();
         progress_bar = new javax.swing.JProgressBar();
-        jLabel3 = new javax.swing.JLabel();
+        JLabel jLabel3 = new JLabel();
         status_editable_label = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -206,12 +206,6 @@ public class InstallViewer extends javax.swing.JFrame {
         dispose();
     }//GEN-LAST:event_nextMouseClicked
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton next;
     private javax.swing.JProgressBar progress_bar;
     private javax.swing.JLabel status_editable_label;

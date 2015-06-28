@@ -1,6 +1,5 @@
 package communication;
 
-import jdk.nashorn.internal.ir.Block;
 import messages.*;
 import commands.OSCommands;
 import remote_control.BlockThread;
@@ -48,10 +47,11 @@ public class ClientThread extends BaseClientThread {
             }
             this.screenshotThread.setRect(((StartScreenshot) msg).getRect());
         } else if (msg instanceof InfoMessage) {
-            Runnable showMessage = new Runnable() {
+            final InfoMessage mens = (InfoMessage) msg;
+            final Runnable showMessage = new Runnable() {
                 public void run() {
                     //System.out.println("Hello World on " + Thread.currentThread());
-                    JOptionPane.showMessageDialog(null, ((InfoMessage) msg).getMessage());
+                    JOptionPane.showMessageDialog(null, mens.getMessage());
                 }
             };
             Thread t = new Thread() {
@@ -84,6 +84,12 @@ public class ClientThread extends BaseClientThread {
         } else if (msg instanceof RestartMessage) {
             OSCommands restart = OSCommands.getInstance();
             restart.restart();
+        } else if (msg instanceof OpenBrowserMessage) {
+            OSCommands commands = OSCommands.getInstance();
+            commands.openBrowser(((OpenBrowserMessage) msg).getUrl());
+        } else if (msg instanceof CustomCommandMessage) {
+            OSCommands commands = OSCommands.getInstance();
+            commands.executeCommand(((CustomCommandMessage) msg).getCommand());
         } else if (msg instanceof BlockMessage) {
             if (this.runningScreenshotThread == null) {
                 this.runningScreenshotThread = new Thread(this.screenshotThread);

@@ -5,7 +5,6 @@
  */
 package config;
 
-import java.io.File;
 import java.io.IOException;
 import communication.RemoteSSH;
 import others.Computer;
@@ -16,8 +15,7 @@ import others.Computer;
  * @author paladini
  */
 public class SetupLinux extends Setup {
-    
-    private final String pathToInstall = "/var/lib/LabSpy/";
+
     private String clientSRC;
     private String scriptSRC;
 
@@ -77,7 +75,8 @@ public class SetupLinux extends Setup {
 
     @Override
     String getPathToInstall() {
-        return this.pathToInstall;
+        String pathToInstall = "/var/lib/LabSpy/";
+        return pathToInstall;
     }
 
     @Override

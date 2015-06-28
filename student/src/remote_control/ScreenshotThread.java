@@ -3,15 +3,11 @@ package remote_control;
 import communication.BaseClientThread;
 import messages.Screenshot;
 import messages.ScreenshotRequest;
-import org.imgscalr.Scalr;
-import org.w3c.dom.css.Rect;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.concurrent.locks.Lock;
 
 /*!
  * Classe responsavel pela captura de tela em um computador
@@ -100,13 +96,15 @@ public class ScreenshotThread implements Runnable {
                 height = 1;
             }
 
-            bImage = Scalr.resize(
-                    bImage,
-                    Scalr.Method.SPEED,
+            BufferedImage nImage = new BufferedImage(
                     width,
-                    height
+                    height,
+                    BufferedImage.TYPE_INT_ARGB
             );
-
+            Graphics g = nImage.createGraphics();
+            g.drawImage(bImage, 0, 0, width, height, null);
+            g.dispose();
+            bImage = nImage;
 
             fpsAvg = ((1000 / (System.currentTimeMillis() - start+1))+fpsAvg)/2;
             System.out.print("\rFPS: " + Math.round(fpsAvg)+"                ");
@@ -119,8 +117,7 @@ public class ScreenshotThread implements Runnable {
             }
             try {
                 Thread.sleep(1000/fps);
-            } catch (InterruptedException e){
-                continue;
+            } catch (InterruptedException ignored){
             }
         }
     }

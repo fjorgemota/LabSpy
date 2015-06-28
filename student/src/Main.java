@@ -1,15 +1,10 @@
 import communication.ClientThread;
 
-import messages.StartScreenshot;
-import remote_control.BlockThread;
+import config.Config;
 import remote_control.RobotThread;
-import remote_control.ScreenshotThread;
 
-import java.awt.*;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
@@ -21,6 +16,7 @@ public class Main {
     public static void main(String[] argv) {
 
         try {
+            Config cfg = Config.getInstance();
             RobotThread robot = new RobotThread();
 
             Thread robotThread = new Thread(robot);
@@ -40,6 +36,12 @@ public class Main {
                     SelectionKey key = keys.next();
                     keys.remove();
                     SocketChannel s = server.accept();
+                    String ip = s.socket().getInetAddress().getHostAddress();
+                    if (!cfg.isTeacherIPValid(ip)) {
+                        s.close();
+                        System.err.println("Blocked access to IP not in trusted list: "+ip);
+                        return;
+                    }
                     s.configureBlocking(false);
                     ClientThread cl = new ClientThread(s, robot);
                     cl.run();

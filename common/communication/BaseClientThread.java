@@ -1,24 +1,19 @@
 package communication;
 
-import messages.*;
+import messages.BaseMessage;
 
-import javax.crypto.CipherInputStream;
 import java.io.*;
-import java.net.Socket;
 import java.nio.ByteBuffer;
-import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.zip.*;
+import java.util.zip.Deflater;
+import java.util.zip.DeflaterOutputStream;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
 
 /*!
  * Classe que implementa o sistema de comunicação básico entre cliente/servidor.
@@ -49,7 +44,7 @@ public abstract class BaseClientThread implements Runnable {
     }
 
     public boolean isRunning() {
-        return !this.stopped && !this.sock.socket().isClosed();
+        return !this.stopped && this.sock != null && !this.sock.socket().isClosed();
     }
 
     @Override
@@ -135,6 +130,10 @@ public abstract class BaseClientThread implements Runnable {
 
     public synchronized void sendMessage(BaseMessage message) {
         try {
+            if (!this.isRunning()) {
+                this.send.clear();
+                return;
+            }
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             Deflater deflater = new Deflater();
             deflater.setLevel(5);

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=LabSpy Teacher Mode
+Comment=An application to monitor what students do in laboratories and help them when needed.
+Exec=labspy
+Icon=HOME/.labspy/icons/labspy_stealth.png
+Type=Application
+Terminal=false
+Categories=Education;

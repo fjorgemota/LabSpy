@@ -49,13 +49,13 @@ public class GeneralSettings extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
+        javax.swing.JScrollPane jScrollPane1 = new javax.swing.JScrollPane();
         computerList_list = new javax.swing.JList();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        javax.swing.JPanel jPanel1 = new javax.swing.JPanel();
+        javax.swing.JLabel jLabel1 = new javax.swing.JLabel();
         next = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        back = new javax.swing.JButton();
+        javax.swing.JLabel jLabel2 = new javax.swing.JLabel();
+        javax.swing.JButton back = new javax.swing.JButton();
         same_password_checkbox = new javax.swing.JCheckBox();
         username_field = new javax.swing.JTextField();
         username_label = new javax.swing.JLabel();
@@ -246,13 +246,7 @@ public class GeneralSettings extends javax.swing.JFrame {
     }//GEN-LAST:event_nextMouseClicked
 
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton back;
     private javax.swing.JList computerList_list;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton next;
     private javax.swing.JPasswordField password_field;
     private javax.swing.JLabel password_label;

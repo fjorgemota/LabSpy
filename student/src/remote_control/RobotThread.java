@@ -5,9 +5,7 @@ import messages.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.ArrayBlockingQueue;
 
 /*!
  * Robo que e responsavel pela sincronizaçao do mouse do
@@ -22,8 +20,8 @@ public class RobotThread implements Runnable {
     private Rectangle screen;
 
     public RobotThread() {
-        this.send = new ArrayBlockingQueue<>(100, true);
-        this.screenshots = new ArrayBlockingQueue<>(10, true);
+        this.send = new ArrayBlockingQueue<RobotMessage>(100, true);
+        this.screenshots = new ArrayBlockingQueue<Screenshot>(10, true);
         this.position = null;
         this.screen = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
     }
@@ -31,6 +29,7 @@ public class RobotThread implements Runnable {
     @Override
     public void run() {
         Robot r = null;
+        //noinspection InfiniteLoopStatement
         while (true) {
             try {
                 if (r == null) {
@@ -76,8 +75,7 @@ public class RobotThread implements Runnable {
                 r.waitForIdle();
             } catch (AWTException e) {
                 e.printStackTrace();
-            } catch (InterruptedException e) {
-                continue;
+            } catch (InterruptedException ignored) {
             }
         }
     }
@@ -104,8 +102,7 @@ public class RobotThread implements Runnable {
             try {
                 result = this.screenshots.take();
             }
-            catch (InterruptedException e){
-                continue;
+            catch (InterruptedException ignored){
             }
         }
         return result;

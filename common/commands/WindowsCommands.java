@@ -9,4 +9,8 @@ public class WindowsCommands extends OSCommands {
 	public void restart() {
 		this.execute("shutdown /r");
 	}
+
+	public void openBrowser(String url) {
+		this.execute("explorer \""+url+"\"");
+	}
 }

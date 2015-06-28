@@ -1,7 +1,5 @@
 package messages;
 
-import javax.swing.*;
-
 /**
  * Created by fernando on 11/04/15.
  */

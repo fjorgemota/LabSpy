@@ -2,14 +2,12 @@ package chat;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
 
 /*!
  * Classe que gera uma janela de bate-papo entre
  * o cliente e o servidor.
  */
 public class Messenger extends JFrame {
-    private TextBox textBox;
 
     public Messenger() {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -17,7 +15,7 @@ public class Messenger extends JFrame {
 
         JPanel panel = new JPanel();
         JTextArea textArea = new JTextArea(10, 10);
-        textBox = new TextBox();
+        TextBox textBox = new TextBox();
         this.setTitle("Chat");
         textArea.setEditable(true);
         JScrollPane scroll = new JScrollPane(panel);
