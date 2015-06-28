@@ -64,7 +64,7 @@ public class SetupLinux extends Setup {
     @Override
     void installToRunAtStartup() {
         try {
-            ssh.executeCommand("echo $SSH_CLIENT | awk '{ print $1}' | sudo tee /var/lib/LabSpy/addressList");
+            ssh.executeCommand("sudo bash -c \"echo ${SSH_CLIENT%% *} > /var/lib/LabSpy/addressList\"");
             ssh.executeCommand("sudo ln -s /var/lib/LabSpy/labspy.sh /etc/init.d/labspy_client");
             ssh.executeCommand("sudo chmod +x /etc/init.d/labspy_client");
             ssh.executeCommand("sudo update-rc.d labspy_client defaults 99 01");
