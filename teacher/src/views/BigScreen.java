@@ -124,7 +124,7 @@ public class BigScreen extends JFrame implements Runnable, ActionListener, KeyLi
                 return;
             }
             this.client.sendMessage(new CustomCommandMessage(cmd));
-        } else if (JOptionPane.showConfirmDialog(null, "Voce tem certeza que deseja desligar/reiniciar este computador?", "Confirmacao", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+        } else if (JOptionPane.showConfirmDialog(null, "You're sure that you want to shutdown/restart this computer?", "Confirmation", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
             if (command.equals(SHUTDOWN)) {
                 client.sendMessage(new ShutdownMessage());
             } else if (command.equals(RESTART)) {

@@ -193,7 +193,7 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
         } else if (command.equals(OPEN_BROWSER)) {
             str = JOptionPane.showInputDialog(null, "Type the URL to Open:");
         } else if (command.equals(SHUTDOWN) || command.equals(RESTART)) {
-            if (JOptionPane.showConfirmDialog(null, "Voce tem certeza que deseja desligar/reiniciar todos os computadores?", "Confirmacao", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+            if (JOptionPane.showConfirmDialog(null, "You're sure that you want to shutdown/restart ALL computers?", "Confirmation", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                 return;
             }
         }
