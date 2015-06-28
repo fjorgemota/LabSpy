@@ -38,7 +38,11 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
     static final String OPEN_BROWSER = "OPEN_BROWSER";
     static final String SHUTDOWN = "SHUTDOWN";
     static final String RESTART = "RESTART";
+    static final String WIDTH = "WIDTH";
+    static final String HEIGHT = "HEIGHT";
     private BufferedImage placeholderImg = null;
+    private int width = 400;
+    private int height = 300;
 
     HashMap<String, JButton> buttons;
 
@@ -107,6 +111,16 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
        restart.addActionListener(this);
        restart.setActionCommand(RESTART);
        menu.add(restart);
+
+       JMenuItem widthButton = new JMenuItem("Set Width");
+       widthButton.addActionListener(this);
+       widthButton.setActionCommand(WIDTH);
+       menu.add(widthButton);
+
+       JMenuItem heightButton = new JMenuItem("Set Height");
+       heightButton.addActionListener(this);
+       heightButton.setActionCommand(HEIGHT);
+       menu.add(heightButton);
 
         stopped = false;
         this.buttons = new HashMap<String, JButton>();
@@ -196,6 +210,30 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
             if (JOptionPane.showConfirmDialog(null, "You're sure that you want to shutdown/restart ALL computers?", "Confirmation", JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
                 return;
             }
+        } else if (command.equals(WIDTH)) {
+            String qnt = JOptionPane.showInputDialog(null, "Width of the screenshot in overview:");
+            try {
+                q = Integer.parseInt(qnt);
+            } catch (NumberFormatException c) {
+                c.printStackTrace();
+                return;
+            }
+            if (q <= 0) {
+                q = 1;
+            }
+            this.width = q;
+        } else if (command.equals(HEIGHT)) {
+            String qnt = JOptionPane.showInputDialog(null, "Height of the screenshot in overview:");
+            try {
+                q = Integer.parseInt(qnt);
+            } catch (NumberFormatException c) {
+                c.printStackTrace();
+                return;
+            }
+            if (q <= 0) {
+                q = 1;
+            }
+            this.height = q;
         }
         for (ClientThread client : clients) {
             if (client.getComputer().getIp().equals(e.getActionCommand())) {
@@ -254,9 +292,9 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
                 if (bImage == null) {
                     bImage = placeholderImg;
                 }
-                nImage = new BufferedImage(400, 300, BufferedImage.TYPE_INT_ARGB);
+                nImage = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
                 Graphics g = nImage.createGraphics();
-                g.drawImage(bImage, 0, 0, 400, 300, null);
+                g.drawImage(bImage, 0, 0, this.width, this.height, null);
                 g.dispose();
                 lb.setIcon(new ImageIcon(nImage));
                 if (label.isEmpty()) {
@@ -271,9 +309,9 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
                 if (bImage == null) {
                     bImage = placeholderImg;
                 }
-                nImage = new BufferedImage(400, 300, BufferedImage.TYPE_INT_ARGB);
+                nImage = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
                 Graphics g = nImage.createGraphics();
-                g.drawImage(bImage, 0, 0, 400, 300, null);
+                g.drawImage(bImage, 0, 0, this.width, this.height, null);
                 g.dispose();
                 lb = new JButton(new ImageIcon(nImage));
                 lb.setActionCommand(ip);
