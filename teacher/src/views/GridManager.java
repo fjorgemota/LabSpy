@@ -31,7 +31,8 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
     private int quantity;
     private int fps;
     private static final String REGRID = "REGRID";
-    private static final String FRAME = "FRAME";
+    private static final String FRAMEBG = "FRAMEBG";
+    private static final String FRAMEST = "FRAMEST";
     private static final String SEND = "SEND";
     HashMap<String, JButton> buttons;
 
@@ -56,10 +57,15 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
         itemRegrid.addActionListener(this);
         menu.add(itemRegrid);
 
-        JMenuItem itemFrames = new JMenuItem("Frames");
-        itemFrames.setActionCommand(FRAME);
-        itemFrames.addActionListener(this);
-        menu.add(itemFrames);
+        JMenuItem itemFramesST = new JMenuItem("Frames ScreenshotThread");
+        itemFramesST.setActionCommand(FRAMEST);
+        itemFramesST.addActionListener(this);
+        menu.add(itemFramesST);
+
+        JMenuItem itemFramesBG = new JMenuItem("Frames BigScreen");
+        itemFramesBG.setActionCommand(FRAMEBG);
+        itemFramesBG.addActionListener(this);
+        menu.add(itemFramesBG);
 
         JMenuItem itemSend = new JMenuItem("Send Message");
         itemSend.setActionCommand(SEND);
@@ -109,6 +115,9 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
         if (command.equals(SEND)) {
             ip = JOptionPane.showInputDialog(null, "Type the IP:");
         }
+        if (command.equals(FRAMEST)) {
+            ip = JOptionPane.showInputDialog(null, "Type the IP:");
+        }
         for (ClientThread client : clients) {
             if (client.getComputer().getIp().equals(e.getActionCommand())) {
                 BigScreen big = new BigScreen(client, fps);
@@ -117,14 +126,35 @@ public class GridManager extends JFrame implements Runnable, ActionListener {
                 break;
             } else if (command.equals(REGRID)) {
                 String qnt = JOptionPane.showInputDialog(null, "Number of Columns:");
-                int q = Integer.parseInt(qnt);
+                int q = 0;
+                try {
+                    q = Integer.parseInt(qnt);
+                } catch (NumberFormatException c) {
+                    c.printStackTrace();
+                }
                 this.setQuantity(q);
                 break;
-            } else if (command.equals(FRAME)) {
-                String qnt = JOptionPane.showInputDialog(null, "Number of frames per second:");
-                int q = Integer.parseInt(qnt);
+            } else if (command.equals(FRAMEST)) {
+                if (client.getComputer().getIp().equals(ip)) {
+                    String qnt = JOptionPane.showInputDialog(null, "Number of frames per second(for the ScreenshotThread):");
+                    int q = 0;
+                    try {
+                        q = Integer.parseInt(qnt);
+                    } catch (NumberFormatException c) {
+                        c.printStackTrace();
+                    }
+                    client.sendMessage(new ChangeFrames(q));
+                    break;
+                }
+            } else if (command.equals(FRAMEBG)) {
+                String qnt = JOptionPane.showInputDialog(null, "Number of frames per second(for the BigScreen):");
+                int q = 0;
+                try {
+                    q = Integer.parseInt(qnt);
+                } catch (NumberFormatException c) {
+                    c.printStackTrace();
+                }
                 this.setFrames(q);
-                client.sendMessage(new ChangeFrames(q));
                 break;
             } else if (command.equals(SEND)) {
                 if (client.getComputer().getIp().equals(ip)) {
