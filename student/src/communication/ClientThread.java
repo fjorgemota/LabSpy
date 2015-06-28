@@ -33,7 +33,6 @@ public class ClientThread extends BaseClientThread {
 
     @Override
     protected void receiveMessage(BaseMessage msg) {
-        final BaseMessage mens = msg;
         if (msg instanceof StartScreenshot) {
             if (this.runningScreenshotThread == null) {
                 this.runningScreenshotThread = new Thread(this.screenshotThread);
@@ -45,7 +44,7 @@ public class ClientThread extends BaseClientThread {
             Runnable showMessage = new Runnable() {
                 public void run() {
                     //System.out.println("Hello World on " + Thread.currentThread());
-                    JOptionPane.showMessageDialog(null, ((InfoMessage) mens).getMessage());
+                    JOptionPane.showMessageDialog(null, ((InfoMessage) msg).getMessage());
                 }
             };
             Thread t = new Thread() {
