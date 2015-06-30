@@ -103,7 +103,6 @@ public class Config {
                 e.printStackTrace();
             }
         } catch (FileNotFoundException e) {
-             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }

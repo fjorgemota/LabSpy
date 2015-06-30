@@ -11,19 +11,40 @@
 SERVICE_NAME=labspy_client
 PATH_TO_JAR=/var/lib/LabSpy/Student.jar
 PID_PATH_NAME=/tmp/labspy_client_pid
-USER_AUTHORITY_PATH="$HOME/.Xauthority"
 case $1 in
     start)
         echo "Starting $SERVICE_NAME ..."
         if [ ! -f $PID_PATH_NAME ]; then
-            export DISPLAY=:0
-            export XAUTHORITY=$USER_AUTHORITY_PATH
-            until xwininfo -root > /dev/null
-            do
-              sleep 5
+            export DISPLAY=""
+            while [ -z "$DISPLAY" ]; do
+                export DISPLAY=`ps aux | grep 'X :' | grep -v grep | grep -E -i -w 'X\s+\:[[:digit:]]+' -o | sed 's/X //'`
+                sleep 1
+            done;
+            
+            export DISPLAY=`echo $DISPLAY | cut -d'.' -f1`
+            export DISPLAY="$DISPLAY.0"
+            export XAUTHORITY=""
+            while [ -z "$XAUTHORITY" ]; do
+                for USER in `who | cut -f1 -d " "`; do 
+                    HM=$( getent passwd "$USER" | cut -d: -f6 )
+                    XA="$HM/.Xauthority"
+                    RES=`xauth -f $XA info | grep "File new:" | grep "no" | wc -l`
+                    if [ "$RES" != "0" ]; then
+                        export XAUTHORITY="$XA"
+                        break;
+                    fi;
+                done;
+            done;
+            
+            STATUS = 1
+            while [ "$STATUS" != "0" ]; do
+                nohup java -jar $PATH_TO_JAR /tmp 2>> /var/log/labspy_stdout >> /var/log/labspy_stderr &
+                PID=$!
+                echo $PID > $PID_PATH_NAME
+                sleep 10
+                kill -0 $PID
+                STATUS=$?
             done
-            nohup java -jar $PATH_TO_JAR /tmp 2>> /var/log/labspy_stdout >> /var/log/labspy_stderr &
-                        echo $! > $PID_PATH_NAME
             echo "$SERVICE_NAME started ..."
         else
             echo "$SERVICE_NAME is already running ..."
@@ -48,14 +69,38 @@ case $1 in
             echo "$SERVICE_NAME stopped ...";
             rm $PID_PATH_NAME
             echo "$SERVICE_NAME starting ..."
-            export DISPLAY=:0
-            export XAUTHORITY=$USER_AUTHORITY_PATH
-            until xwininfo -root > /dev/null
-            do
-              sleep 5
+            
+            export DISPLAY=""
+            while [ -z "$DISPLAY" ]; do
+                export DISPLAY=`ps aux | grep 'X :' | grep -v grep | grep -E -i -w 'X\s+\:[[:digit:]]+' -o | sed 's/X //'`
+                sleep 1
+            done;
+            
+            export DISPLAY=`echo $DISPLAY | cut -d'.' -f1`
+            export DISPLAY="$DISPLAY.0"
+            export XAUTHORITY=""
+            while [ -z "$XAUTHORITY" ]; do
+                for USER in `who | cut -f1 -d " "`; do 
+                    HM=$( getent passwd "$USER" | cut -d: -f6 )
+                    XA="$HM/.Xauthority"
+                    RES=`xauth -f $XA info | grep "File new:" | grep "no" | wc -l`
+                    if [ "$RES" != "0" ]; then
+                        export XAUTHORITY="$XA"
+                        break;
+                    fi;
+                done;
+            done;
+            
+            STATUS = 1
+            while [ "$STATUS" != "0" ]; do
+                nohup java -jar $PATH_TO_JAR /tmp 2>> /var/log/labspy_stdout >> /var/log/labspy_stderr &
+                PID=$!
+                echo $PID > $PID_PATH_NAME
+                sleep 10
+                kill -0 $PID
+                STATUS=$?
             done
-            nohup java -jar $PATH_TO_JAR /tmp 2>> /dev/null >> /dev/null &
-                        echo $! > $PID_PATH_NAME
+            echo $! > $PID_PATH_NAME
             echo "$SERVICE_NAME started ..."
         else
             echo "$SERVICE_NAME is not running ..."
