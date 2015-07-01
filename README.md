@@ -1,5 +1,16 @@
-# LabSpy
-An application to monitor what students do in laboratories and help them when needed.
+![](assets/labspy400x400.png)
+
+LabSpy is an application to monitor what students do in laboratories and help them when needed.
+
+Some features of LabSpy include:
+
+- Live stream from student computers
+- Block / Unblock students computer
+- Send message to students
+- Run commands (terminal commands) remotely, from teacher computer to students computer.
+- Etc.
+
+If you would like to read LabSpy full documentation, please [check out the Wiki](https://github.com/fjorgemota/LabSpy/wiki). Otherwise, you can follow the instructions bellow in this README (not recomended at all, because LabSpy is a complex software). 
 
 # How to install (end-users)
 
