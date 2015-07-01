@@ -5,7 +5,7 @@ An application to monitor what students do in laboratories and help them when ne
 
 1. Download the latest Oracle JRE and install it in your OS.
 2. Download the latest [LabSpy version](https://github.com/fjorgemota/LabSpy/archive/master.zip).
-2. Run `./install.sh teacher` or `./install.sh student` from a Terminal window. If you don't have Ant installed or just want to skip compilation, add the flag ` -nc` to the end of command. 
+2. Run `./install.sh teacher` or `./install.sh student`.
 3. Have fun ;)
 
 # How to install (manually)
