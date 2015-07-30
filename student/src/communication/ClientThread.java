@@ -2,6 +2,7 @@ package communication;
 
 import messages.*;
 import commands.OSCommands;
+import chat.Messenger;
 import remote_control.BlockThread;
 import remote_control.RobotThread;
 import remote_control.ScreenshotThread;
@@ -19,6 +20,7 @@ public class ClientThread extends BaseClientThread {
     private ScreenshotThread screenshotThread;
     private RobotThread robotThread;
     private BlockThread blockThread;
+    private ChatStudent chat;
    //private int frames;
     private Thread runningScreenshotThread;
     private Thread runningBlockThread;
@@ -52,6 +54,13 @@ public class ClientThread extends BaseClientThread {
                 public void run() {
                     //System.out.println("Hello World on " + Thread.currentThread());
                     JOptionPane.showMessageDialog(null, mens.getMessage());
+                    if (JOptionPane.showConfirmDialog(null, "Do you want respond this message?") == JOptionPane.OK_OPTION) {
+                        chat = new ChatStudent();
+                        chat.receiveMessage(mens.getMessage());
+                        chat.sendMessage(ClientThread.this);
+                        final InfoMessage join = new InfoMessage("joins to the chat");
+                        ClientThread.this.sendMessage(join);
+                    }
                 }
             };
             Thread t = new Thread() {
@@ -65,6 +74,10 @@ public class ClientThread extends BaseClientThread {
             };
             t.start();
 
+        } else if (msg instanceof ChatMessage) {
+            final ChatMessage message = (ChatMessage) msg;
+            this.chat.receiveMessage(message.getMessage());
+            this.chat.sendMessage(ClientThread.this);
         } else if (msg instanceof ChangeFrames) {
             if (this.runningScreenshotThread == null) {
                 this.runningScreenshotThread = new Thread(this.screenshotThread);

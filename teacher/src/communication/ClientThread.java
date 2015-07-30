@@ -1,9 +1,11 @@
 package communication;
 
 import others.Computer;
+import chat.Messenger;
 import messages.BaseMessage;
 import messages.InfoMessage;
 import messages.Screenshot;
+import messages.ChatMessage;
 
 import java.nio.channels.SocketChannel;
 
@@ -16,6 +18,7 @@ public class ClientThread extends BaseClientThread {
     private Screenshot lastScreenshot;
     private InfoMessage info;
     private Computer computer;
+    private ChatTeacher chat;
 
     public ClientThread(SocketChannel sock, Computer computer) {
         super(sock);
@@ -29,6 +32,13 @@ public class ClientThread extends BaseClientThread {
             this.lastScreenshot = (Screenshot) msg;
         } else if (msg instanceof InfoMessage) {
             this.info = (InfoMessage) msg;
+            this.chat = new ChatTeacher();
+            this.chat.receiveMessage(this.info.getMessage());
+            this.chat.sendMessage(ClientThread.this);
+        } else if (msg instanceof ChatMessage) {
+            ChatMessage mess = (ChatMessage) msg;
+            this.chat.receiveMessage(mess.getMessage());
+            this.chat.sendMessage(ClientThread.this);
         }
     }
 
