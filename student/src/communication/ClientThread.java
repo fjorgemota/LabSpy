@@ -2,7 +2,6 @@ package communication;
 
 import messages.*;
 import commands.OSCommands;
-import chat.Messenger;
 import remote_control.BlockThread;
 import remote_control.RobotThread;
 import remote_control.ScreenshotThread;

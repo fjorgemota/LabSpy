@@ -1,7 +1,6 @@
 package communication;
 
 import others.Computer;
-import chat.Messenger;
 import messages.BaseMessage;
 import messages.InfoMessage;
 import messages.Screenshot;
