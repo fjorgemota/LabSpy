@@ -32,11 +32,12 @@ public class ClientThread extends BaseClientThread {
         } else if (msg instanceof InfoMessage) {
             this.info = (InfoMessage) msg;
             this.chat = new ChatTeacher();
-            this.chat.receiveMessage(this.info.getMessage());
+            this.chat.receiveMessage(this.computer.toString() + ": " + this.info.getMessage());
             this.chat.sendMessage(ClientThread.this);
         } else if (msg instanceof ChatMessage) {
+            String student_name = this.computer.toString();
             ChatMessage mess = (ChatMessage) msg;
-            this.chat.receiveMessage(mess.getMessage());
+            this.chat.receiveMessage(student_name + ": " + mess.getMessage());
             this.chat.sendMessage(ClientThread.this);
         }
     }

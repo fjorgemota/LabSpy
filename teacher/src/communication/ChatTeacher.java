@@ -12,7 +12,7 @@ public class ChatTeacher {
 	}
 
 	public void receiveMessage(String msg) {
-        this.chat.addMessageOnTheScreen("Student: " + msg);
+        this.chat.addMessageOnTheScreen(msg);
 	}
 
 	public void sendMessage(BaseClientThread client) {
